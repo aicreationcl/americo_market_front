@@ -2,21 +2,33 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
 
-const Home = lazy(() => import('@/pages/Home'))
-const Catalog = lazy(() => import('@/pages/Catalog'))
-const CategoryPage = lazy(() => import('@/pages/CategoryPage'))
-const ProductPage = lazy(() => import('@/pages/ProductPage'))
-const CartPage = lazy(() => import('@/pages/CartPage'))
-const CheckoutPage = lazy(() => import('@/pages/CheckoutPage'))
-const OrderConfirmation = lazy(() => import('@/pages/OrderConfirmation'))
-const OrderTracking = lazy(() => import('@/pages/OrderTracking'))
-const LoginPage = lazy(() => import('@/pages/LoginPage'))
-const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
-const NotFound = lazy(() => import('@/pages/NotFound'))
+const Home = lazy(() => import('@/shop/pages/Home'))
+const Catalog = lazy(() => import('@/shop/pages/Catalog'))
+const CategoryPage = lazy(() => import('@/shop/pages/CategoryPage'))
+const ProductPage = lazy(() => import('@/shop/pages/ProductPage'))
+const CartPage = lazy(() => import('@/shop/pages/CartPage'))
+const CheckoutPage = lazy(() => import('@/shop/pages/CheckoutPage'))
+const OrderConfirmation = lazy(() => import('@/shop/pages/OrderConfirmation'))
+const OrderTracking = lazy(() => import('@/shop/pages/OrderTracking'))
+const LoginPage = lazy(() => import('@/shop/pages/LoginPage'))
+const RegisterPage = lazy(() => import('@/shop/pages/RegisterPage'))
+const NotFound = lazy(() => import('@/shop/pages/NotFound'))
+
+const AdminLayout = lazy(() => import('@/admin/components/layout/AdminLayout'))
+const AdminDashboard = lazy(() => import('@/admin/pages/AdminDashboard'))
+const AdminProducts = lazy(() => import('@/admin/pages/AdminProducts'))
+const AdminOrders = lazy(() => import('@/admin/pages/AdminOrders'))
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
+}
+
+function AdminGuard({ children }: { children: React.ReactNode }) {
+  const user = useAuthStore((s) => s.user)
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role !== 'admin') return <Navigate to="/" replace />
+  return <>{children}</>
 }
 
 function PageLoader() {
@@ -49,6 +61,18 @@ export function AppRouter() {
             </AuthGuard>
           }
         />
+        <Route
+          path="/admin"
+          element={
+            <AdminGuard>
+              <AdminLayout />
+            </AdminGuard>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+          <Route path="productos" element={<AdminProducts />} />
+          <Route path="pedidos" element={<AdminOrders />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

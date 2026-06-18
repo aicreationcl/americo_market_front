@@ -16,6 +16,11 @@ const queryClient = new QueryClient({
   },
 })
 
+if (import.meta.env.VITE_USE_MOCKS === 'true') {
+  const { setupMocks } = await import('./mocks/index')
+  setupMocks(queryClient)
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
