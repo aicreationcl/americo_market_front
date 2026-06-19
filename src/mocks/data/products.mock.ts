@@ -1,12 +1,39 @@
 import type { Product } from '@/types'
 import { MOCK_CATEGORIES } from './categories.mock'
 
+// ── Imágenes reales desde src/assets/market/ ──────────────────────────────
+import imgArroz       from '@/assets/market/arroz-tucapel-graneado-premium-grado-1-1kg.jpg'
+import imgFideos      from '@/assets/market/spagethi5_carozzi_400.webp'
+import imgAceite      from '@/assets/market/aceite_vegetal_lider_1.avif'
+import imgAzucar      from '@/assets/market/Azucar-Blanca-Iansa-1-kg.webp'
+import imgHarina      from '@/assets/market/harina_selecta1.jpg'
+import imgCocaCola    from '@/assets/market/Bebida-Coca-Cola-Original-15-L.webp'
+import imgCachantun   from '@/assets/market/cachantun_sin_gas_1.webp'
+import imgJugo        from '@/assets/market/jugo_naranja_watt_-lg.webp'
+import imgCerveza     from '@/assets/market/Pack-6-un-Cerveza-Escudo-Lager-55°-350-cc.webp'
+import imgLeche       from '@/assets/market/leche_soprole_entera_1lt.png'
+import imgYogurt      from '@/assets/market/yogur-nestle-natural-x4.png'
+import imgQueso       from '@/assets/market/queso_gouda_laminado_250gr.png'
+import imgTomate      from '@/assets/market/tomate-pera.jpg'
+import imgPlatano     from '@/assets/market/platano_.png'
+import imgManzana     from '@/assets/market/manzana.jpg'
+import imgLechuga     from '@/assets/market/lechuga_hidroponica.jpg'
+import imgAriel       from '@/assets/market/ariel_1kg.png'
+import imgClorox      from '@/assets/market/clorox_1lt.png'
+import imgElite       from '@/assets/market/Elite_20-_2032_20rollos.png'
+import imgPapas       from '@/assets/market/papas_clasicas_150gr_d.png'
+import imgOreo        from '@/assets/market/oreo_original_d.png'
+import imgMani        from '@/assets/market/mani-tostado-con-piel-1-kg.jpg'
+import imgAnimalitos  from '@/assets/market/animalitos_galleta_.jpg'
+import imgMonster     from '@/assets/market/monster-taurina-guarana-473-ml.jpg'
+import imgHuevos      from '@/assets/market/Huevos-Blancos-12-un.webp'
+
 const [catAbarrotes, catBebidas, catLacteos, catCarnes, catFrutas, catLimpieza, catSnacks] = MOCK_CATEGORIES
 
-const img = (name: string) => [{ url: `/mock-images/${name}.jpg`, alt: name }]
+const pic = (url: string, alt: string) => [{ url, alt }]
 
 export const MOCK_PRODUCTS: Product[] = [
-  // ── ABARROTES ──────────────────────────────────────────────────────
+  // ── ABARROTES ──────────────────────────────────────────────────────────────
   {
     _id: 'prod-1',
     name: 'Arroz Carozzi Grado 1 — 1 kg',
@@ -14,7 +41,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'ARR-CAR-001',
     shortDescription: 'Arroz grado 1, ideal para preparaciones del día a día',
     category: catAbarrotes,
-    images: img('arroz'),
+    images: pic(imgArroz, 'Arroz grado 1 kg'),
     price: 1290,
     unit: 'kg',
     stock: 85,
@@ -29,7 +56,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'FID-CAR-001',
     shortDescription: 'Fideos espagueti de sémola de trigo durum',
     category: catAbarrotes,
-    images: img('fideos'),
+    images: pic(imgFideos, 'Fideos Carozzi espagueti 400 g'),
     price: 890,
     unit: 'un',
     stock: 120,
@@ -44,7 +71,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'ACE-LID-001',
     shortDescription: 'Aceite vegetal multiuso, ideal para freír y aderezar',
     category: catAbarrotes,
-    images: img('aceite'),
+    images: pic(imgAceite, 'Aceite vegetal Líder 1 L'),
     price: 3490,
     compareAtPrice: 3990,
     unit: 'lt',
@@ -60,7 +87,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'AZU-IAN-001',
     shortDescription: 'Azúcar granulada refinada, el clásico de cada cocina',
     category: catAbarrotes,
-    images: img('azucar'),
+    images: pic(imgAzucar, 'Azúcar blanca Iansa 1 kg'),
     price: 990,
     unit: 'kg',
     stock: 95,
@@ -75,7 +102,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'HAR-SEL-001',
     shortDescription: 'Harina de trigo sin polvos de hornear, para todo tipo de masas',
     category: catAbarrotes,
-    images: img('harina'),
+    images: pic(imgHarina, 'Harina Selecta 1 kg'),
     price: 1190,
     unit: 'kg',
     stock: 60,
@@ -90,7 +117,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'TOM-ARC-001',
     shortDescription: 'Tomates pelados enteros al natural, para salsas y guisos',
     category: catAbarrotes,
-    images: img('conserva-tomate'),
+    images: [],
     price: 890,
     compareAtPrice: 1090,
     unit: 'un',
@@ -100,7 +127,7 @@ export const MOCK_PRODUCTS: Product[] = [
     brand: 'Arcor',
   },
 
-  // ── BEBIDAS ────────────────────────────────────────────────────────
+  // ── BEBIDAS ────────────────────────────────────────────────────────────────
   {
     _id: 'prod-7',
     name: 'Coca-Cola Original — 1.5 L',
@@ -108,7 +135,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'BEB-CC-001',
     shortDescription: 'La bebida gaseosa más popular del mundo',
     category: catBebidas,
-    images: img('coca-cola'),
+    images: pic(imgCocaCola, 'Coca-Cola Original 1.5 L'),
     price: 1590,
     unit: 'lt',
     stock: 200,
@@ -123,7 +150,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'BEB-CAC-001',
     shortDescription: 'Agua mineral natural sin gas, de manantial chileno',
     category: catBebidas,
-    images: img('agua'),
+    images: pic(imgCachantun, 'Agua Cachantún sin gas 1.5 L'),
     price: 890,
     unit: 'lt',
     stock: 300,
@@ -138,7 +165,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'BEB-WAT-001',
     shortDescription: 'Néctar de naranja con pulpa, sin conservantes artificiales',
     category: catBebidas,
-    images: img('jugo-naranja'),
+    images: pic(imgJugo, 'Jugo Watts Naranja 1 L'),
     price: 1490,
     unit: 'lt',
     stock: 85,
@@ -153,7 +180,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'BEB-ESC-001',
     shortDescription: 'Cerveza lager chilena, refrescante y de sabor suave',
     category: catBebidas,
-    images: img('cerveza'),
+    images: pic(imgCerveza, 'Cerveza Escudo pack 6 unidades'),
     price: 4990,
     compareAtPrice: 5490,
     unit: 'paq',
@@ -163,7 +190,7 @@ export const MOCK_PRODUCTS: Product[] = [
     brand: 'Escudo',
   },
 
-  // ── LÁCTEOS Y HUEVOS ───────────────────────────────────────────────
+  // ── LÁCTEOS Y HUEVOS ───────────────────────────────────────────────────────
   {
     _id: 'prod-11',
     name: 'Leche Soprole Entera — 1 L',
@@ -171,7 +198,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'LAC-SOP-001',
     shortDescription: 'Leche entera UHT, sin lactosa disponible en la misma marca',
     category: catLacteos,
-    images: img('leche'),
+    images: pic(imgLeche, 'Leche Soprole entera 1 L'),
     price: 1190,
     unit: 'lt',
     stock: 150,
@@ -186,7 +213,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'LAC-NES-001',
     shortDescription: 'Yogurt natural cremoso sin azúcar añadida',
     category: catLacteos,
-    images: img('yogurt'),
+    images: pic(imgYogurt, 'Yogurt Nestlé natural pack 4'),
     price: 1890,
     unit: 'paq',
     stock: 60,
@@ -201,7 +228,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'LAC-COL-001',
     shortDescription: 'Queso gauda laminado, ideal para sándwich y tabla de quesos',
     category: catLacteos,
-    images: img('queso'),
+    images: pic(imgQueso, 'Queso gauda laminado 250 g'),
     price: 2490,
     unit: 'un',
     stock: 35,
@@ -216,7 +243,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'LAC-HUE-001',
     shortDescription: 'Huevos frescos blancos, categoría A',
     category: catLacteos,
-    images: img('huevos'),
+    images: pic(imgHuevos, 'Huevos frescos 12 un'),
     price: 3290,
     unit: 'un',
     stock: 70,
@@ -225,7 +252,7 @@ export const MOCK_PRODUCTS: Product[] = [
     brand: 'Súper 8',
   },
 
-  // ── CARNES Y EMBUTIDOS ─────────────────────────────────────────────
+  // ── CARNES Y EMBUTIDOS ─────────────────────────────────────────────────────
   {
     _id: 'prod-15',
     name: 'Pechuga de Pollo — 1 kg',
@@ -233,7 +260,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'CAR-POL-001',
     shortDescription: 'Pechuga de pollo fresca, sin hueso y sin piel',
     category: catCarnes,
-    images: img('pollo'),
+    images: [],
     price: 4990,
     unit: 'kg',
     stock: 25,
@@ -248,7 +275,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'CAR-VAC-001',
     shortDescription: 'Carne de vacuno molida especial, baja en grasa',
     category: catCarnes,
-    images: img('carne-molida'),
+    images: [],
     price: 3990,
     unit: 'un',
     stock: 18,
@@ -263,7 +290,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'EMB-VIC-001',
     shortDescription: 'Jamón de cerdo ahumado, laminado fino, ideal para sándwich',
     category: catCarnes,
-    images: img('jamon'),
+    images: [],
     price: 1990,
     compareAtPrice: 2290,
     unit: 'un',
@@ -273,7 +300,7 @@ export const MOCK_PRODUCTS: Product[] = [
     brand: 'Vicky',
   },
 
-  // ── FRUTAS Y VERDURAS ──────────────────────────────────────────────
+  // ── FRUTAS Y VERDURAS ──────────────────────────────────────────────────────
   {
     _id: 'prod-18',
     name: 'Tomate Pera — 1 kg',
@@ -281,7 +308,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'FRU-TOM-001',
     shortDescription: 'Tomates pera rojos, perfectos para salsa casera',
     category: catFrutas,
-    images: img('tomate'),
+    images: pic(imgTomate, 'Tomate pera 1 kg'),
     price: 1290,
     unit: 'kg',
     stock: 30,
@@ -296,7 +323,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'FRU-PLA-001',
     shortDescription: 'Plátanos de seda maduros, ricos en potasio y fibra',
     category: catFrutas,
-    images: img('platano'),
+    images: pic(imgPlatano, 'Plátano de seda 1 kg'),
     price: 1490,
     unit: 'kg',
     stock: 20,
@@ -311,7 +338,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'FRU-MAN-001',
     shortDescription: 'Manzanas Royal Gala chilenas, dulces y crujientes',
     category: catFrutas,
-    images: img('manzana'),
+    images: pic(imgManzana, 'Manzana Royal Gala 1 kg'),
     price: 1990,
     unit: 'kg',
     stock: 0,
@@ -326,7 +353,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'VER-LEC-001',
     shortDescription: 'Lechuga hidropónica fresca, lista para ensalada',
     category: catFrutas,
-    images: img('lechuga'),
+    images: pic(imgLechuga, 'Lechuga hidropónica'),
     price: 990,
     unit: 'un',
     stock: 15,
@@ -335,7 +362,7 @@ export const MOCK_PRODUCTS: Product[] = [
     brand: undefined,
   },
 
-  // ── LIMPIEZA Y HOGAR ───────────────────────────────────────────────
+  // ── LIMPIEZA Y HOGAR ───────────────────────────────────────────────────────
   {
     _id: 'prod-22',
     name: 'Detergente Ariel Regular — 1 kg',
@@ -343,7 +370,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'LIM-ARI-001',
     shortDescription: 'Detergente en polvo con tecnología anti-manchas',
     category: catLimpieza,
-    images: img('detergente'),
+    images: pic(imgAriel, 'Detergente Ariel regular 1 kg'),
     price: 5490,
     compareAtPrice: 6290,
     unit: 'kg',
@@ -359,7 +386,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'LIM-CLO-001',
     shortDescription: 'Desinfectante con cloro activo, elimina el 99.9% de gérmenes',
     category: catLimpieza,
-    images: img('cloro'),
+    images: pic(imgClorox, 'Cloro Clorox 1 L'),
     price: 1490,
     unit: 'lt',
     stock: 80,
@@ -374,7 +401,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'LIM-ELI-001',
     shortDescription: 'Papel higiénico doble hoja ultra suave, con 400 hojas por rollo',
     category: catLimpieza,
-    images: img('papel-higienico'),
+    images: pic(imgElite, 'Papel higiénico Elite'),
     price: 3290,
     compareAtPrice: 3990,
     unit: 'paq',
@@ -384,15 +411,15 @@ export const MOCK_PRODUCTS: Product[] = [
     brand: 'Elite',
   },
 
-  // ── SNACKS Y CONFITES ──────────────────────────────────────────────
+  // ── SNACKS Y CONFITES ──────────────────────────────────────────────────────
   {
     _id: 'prod-25',
-    name: 'Papas Fritas Lay\'s Clásicas — 150 g',
+    name: "Papas Fritas Lay's Clásicas — 150 g",
     slug: 'papas-fritas-lays-clasicas-150g',
     sku: 'SNK-LAY-001',
     shortDescription: 'Papas fritas crocantes con sal, el snack favorito',
     category: catSnacks,
-    images: img('papas-fritas'),
+    images: pic(imgPapas, "Papas fritas Lay's clásicas 150 g"),
     price: 1790,
     unit: 'un',
     stock: 110,
@@ -407,7 +434,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'SNK-ORE-001',
     shortDescription: 'Galletas de cacao con relleno de crema de vainilla',
     category: catSnacks,
-    images: img('galletas-oreo'),
+    images: pic(imgOreo, 'Galletas Oreo original 154 g'),
     price: 1990,
     compareAtPrice: 2290,
     unit: 'un',
@@ -423,7 +450,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'SNK-COS-001',
     shortDescription: 'Barra de chocolate con leche, el sabor chileno de siempre',
     category: catSnacks,
-    images: img('chocolate'),
+    images: [],
     price: 1490,
     unit: 'un',
     stock: 55,
@@ -438,7 +465,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'SNK-DIL-001',
     shortDescription: 'Maní tostado salado, rico en proteínas vegetales',
     category: catSnacks,
-    images: img('mani'),
+    images: pic(imgMani, 'Maní tostado con piel 1 kg'),
     price: 1290,
     unit: 'un',
     stock: 60,
@@ -453,7 +480,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'SNK-COL-001',
     shortDescription: 'Galletas de vainilla con forma de animales, clásico chileno',
     category: catSnacks,
-    images: img('galletas-animalitos'),
+    images: pic(imgAnimalitos, 'Galletas Animalitos 140 g'),
     price: 890,
     unit: 'un',
     stock: 90,
@@ -468,7 +495,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'BEB-MON-001',
     shortDescription: 'Bebida energizante con cafeína, taurina y vitaminas B',
     category: catBebidas,
-    images: img('monster'),
+    images: pic(imgMonster, 'Monster Energy original 473 ml'),
     price: 2490,
     unit: 'lt',
     stock: 45,

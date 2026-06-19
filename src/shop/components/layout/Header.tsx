@@ -49,7 +49,7 @@ export function Header() {
             <Link to="/" className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors">
               Inicio
             </Link>
-            <div className="relative" onMouseLeave={() => setCategoriesOpen(false)}>
+            <div className="relative pb-1" onMouseLeave={() => setCategoriesOpen(false)}>
               <button
                 className="flex items-center gap-1 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
                 onMouseEnter={() => setCategoriesOpen(true)}
@@ -57,7 +57,7 @@ export function Header() {
                 Catálogo <ChevronDown className="h-4 w-4" />
               </button>
               {categoriesOpen && categories && categories.length > 0 && (
-                <div className="absolute left-0 top-full z-50 mt-1 min-w-[200px] rounded-xl border border-border bg-popover p-2 shadow-lg">
+                <div className="absolute left-0 top-full z-50 min-w-[200px] rounded-xl border border-border bg-popover p-2 shadow-lg">
                   {categories.map((cat) => (
                     <Link
                       key={cat._id}
