@@ -12,7 +12,9 @@ export const useLogin = () => {
     onSuccess: async ({ user, accessToken }) => {
       setAuth(user, accessToken)
       try {
-        await mergeCart()
+        // Pass token explicitly — avoid race condition where interceptor reads store
+        // before the just-set accessToken propagates, which would trigger clearAuth()
+        await mergeCart(accessToken)
       } catch {
         // merge failure is non-critical
       }
@@ -30,7 +32,7 @@ export const useRegister = () => {
     onSuccess: async ({ user, accessToken }) => {
       setAuth(user, accessToken)
       try {
-        await mergeCart()
+        await mergeCart(accessToken)
       } catch {
         // merge failure is non-critical
       }

@@ -59,7 +59,7 @@ export default function ProductPage() {
 
   const hasDiscount = !!product.compareAtPrice && product.compareAtPrice > product.price
   const inStock = product.stock > 0
-  const images = product.images?.length ? product.images : [{ url: '/placeholder-product.jpg', alt: product.name }]
+  const images = product.images?.length ? product.images : [{ url: '/placeholder-product.svg', alt: product.name }]
 
   const jsonLd = {
     '@context': 'https://schema.org',

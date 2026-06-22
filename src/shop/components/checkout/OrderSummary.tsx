@@ -22,7 +22,7 @@ export function OrderSummary({ shippingCost, commune }: OrderSummaryProps) {
             <div className="flex items-center gap-2 min-w-0">
               <div className="h-8 w-8 shrink-0 overflow-hidden rounded-md bg-stone-100">
                 <img
-                  src={item.product.images?.[0]?.url || '/placeholder-product.jpg'}
+                  src={item.product.images?.[0]?.url || '/placeholder-product.svg'}
                   alt={item.product.name}
                   className="h-full w-full object-cover"
                 />

@@ -23,7 +23,7 @@ export function ProductCard({ product }: ProductCardProps) {
     ? Math.round(((product.compareAtPrice! - product.price) / product.compareAtPrice!) * 100)
     : 0
   const inStock = product.stock > 0
-  const imageUrl = product.images?.[0]?.url || '/placeholder-product.jpg'
+  const imageUrl = product.images?.[0]?.url || '/placeholder-product.svg'
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()

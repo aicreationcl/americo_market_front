@@ -12,7 +12,7 @@ interface CartItemProps {
 
 export function CartItem({ item }: CartItemProps) {
   const { updateItem, removeItem } = useCart()
-  const imageUrl = item.product.images?.[0]?.url || '/placeholder-product.jpg'
+  const imageUrl = item.product.images?.[0]?.url || '/placeholder-product.svg'
 
   const handleUpdate = async (newQty: number) => {
     if (newQty < 1) return

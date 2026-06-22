@@ -25,7 +25,11 @@ export const clearCart = async (): Promise<void> => {
   await axiosClient.delete('/cart')
 }
 
-export const mergeCart = async (): Promise<Cart> => {
-  const { data } = await axiosClient.post<Cart>('/cart/merge')
+export const mergeCart = async (token?: string): Promise<Cart> => {
+  const { data } = await axiosClient.post<Cart>(
+    '/cart/merge',
+    null,
+    token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+  )
   return data
 }
