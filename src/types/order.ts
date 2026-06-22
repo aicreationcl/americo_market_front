@@ -1,44 +1,68 @@
-import type { Product } from './product'
-
 export type FulfillmentType = 'delivery' | 'pickup'
 
 export type OrderStatus =
-  | 'pending'
-  | 'confirmed'
+  | 'pending_payment'
+  | 'payment_confirmed'
   | 'preparing'
-  | 'ready'
-  | 'on_the_way'
+  | 'ready_for_pickup'
+  | 'in_transit'
   | 'delivered'
   | 'cancelled'
+  | 'refunded'
 
 export interface OrderItem {
-  product: Product
-  quantity: number
+  product: string   // MongoDB ObjectId string (snapshot)
+  name: string
+  sku: string
   price: number
+  quantity: number
+  imageUrl: string
   subtotal: number
 }
 
-export interface DeliveryAddress {
-  street: string
-  number: string
-  apartment?: string
-  commune: string
-  references?: string
+export interface CustomerData {
+  name: string
+  email: string
+  phone?: string
+  rut?: string
+}
+
+export interface FulfillmentAddress {
+  street?: string
+  number?: string
+  commune?: string
+  region?: string
+  additionalInfo?: string
+}
+
+export interface FulfillmentData {
+  type: FulfillmentType
+  shippingCost?: number
+  address?: FulfillmentAddress
+  pickupStore?: {
+    name?: string
+    address?: string
+  }
+  estimatedDate?: string
+}
+
+export interface StatusHistoryEntry {
+  status: string
+  changedAt: string
+  note?: string
 }
 
 export interface Order {
   _id: string
   orderNumber: string
-  status: OrderStatus
-  fulfillmentType: FulfillmentType
+  customerData: CustomerData
+  fulfillmentData: FulfillmentData
   items: OrderItem[]
   subtotal: number
-  shippingCost: number
   total: number
-  guestName?: string
-  guestEmail?: string
-  guestPhone?: string
-  deliveryAddress?: DeliveryAddress
+  status: OrderStatus
+  statusHistory: StatusHistoryEntry[]
+  notes?: string
   createdAt: string
   updatedAt: string
 }

@@ -1,14 +1,17 @@
 import { useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Package, ClipboardList, LogOut, Menu, X, Store } from 'lucide-react'
+import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom'
+import { LayoutDashboard, Package, ClipboardList, Users, LogOut, Menu, X, Store } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { UserAvatar } from '@/components/UserAvatar'
 import { useAuthStore } from '@/store/authStore'
+import { useLogout } from '@/shop/hooks/useAuth'
 
 const NAV_ITEMS = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/admin/productos', label: 'Productos', icon: Package, end: false },
   { to: '/admin/pedidos', label: 'Pedidos', icon: ClipboardList, end: false },
+  { to: '/admin/usuarios', label: 'Usuarios', icon: Users, end: false },
 ]
 
 function NavItems({ onClose }: { onClose?: () => void }) {
@@ -40,9 +43,15 @@ function NavItems({ onClose }: { onClose?: () => void }) {
 export default function AdminLayout() {
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const logoutMutation = useLogout()
+  const user = useAuthStore((s) => s.user)
 
-  const handleLogout = () => {
-    useAuthStore.getState().clearAuth()
+  const handleLogout = async () => {
+    try {
+      await logoutMutation.mutateAsync()
+    } catch {
+      useAuthStore.getState().clearAuth()
+    }
     navigate('/login', { replace: true })
   }
 
@@ -62,15 +71,28 @@ export default function AdminLayout() {
         <NavItems onClose={() => setMobileOpen(false)} />
       </div>
 
-      <Button
-        variant="ghost"
-        size="sm"
-        className="mt-4 w-full justify-start gap-3 text-muted-foreground hover:text-destructive"
-        onClick={handleLogout}
-      >
-        <LogOut className="h-4 w-4" />
-        Cerrar sesión
-      </Button>
+      <div className="mt-4 border-t border-border pt-4">
+        <Link
+          to="/admin/perfil"
+          onClick={() => setMobileOpen(false)}
+          className="mb-2 flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-muted"
+        >
+          <UserAvatar user={user} size="sm" />
+          <div className="min-w-0">
+            <p className="truncate text-xs font-semibold leading-tight">{user?.name}</p>
+            <p className="truncate text-[10px] text-muted-foreground">Editar perfil</p>
+          </div>
+        </Link>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive"
+          onClick={handleLogout}
+        >
+          <LogOut className="h-4 w-4" />
+          Cerrar sesión
+        </Button>
+      </div>
     </div>
   )
 

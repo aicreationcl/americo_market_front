@@ -49,7 +49,7 @@ export function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-4">
               <AnimatePresence>
                 {items.map((item) => (
-                  <div key={item._id}>
+                  <div key={item.product}>
                     <CartItem item={item} />
                     <Separator />
                   </div>

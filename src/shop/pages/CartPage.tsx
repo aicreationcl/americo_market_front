@@ -65,7 +65,7 @@ export default function CartPage() {
           <div className="flex-1">
             <AnimatePresence>
               {items.map((item) => (
-                <div key={item._id}>
+                <div key={item.product}>
                   <CartItem item={item} />
                   <Separator />
                 </div>

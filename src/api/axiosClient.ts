@@ -44,10 +44,11 @@ axiosClient.interceptors.response.use(
       originalRequest._retry = true
       isRefreshing = true
       try {
-        const { data } = await axiosClient.post<{ accessToken: string }>('/auth/refresh')
-        useAuthStore.getState().setToken(data.accessToken)
-        processQueue(null, data.accessToken)
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`
+        const { data } = await axiosClient.post<{ success: boolean; data: { accessToken: string } }>('/auth/refresh')
+        const newToken = data.data.accessToken
+        useAuthStore.getState().setToken(newToken)
+        processQueue(null, newToken)
+        originalRequest.headers.Authorization = `Bearer ${newToken}`
         return axiosClient(originalRequest)
       } catch (refreshError) {
         processQueue(refreshError, null)

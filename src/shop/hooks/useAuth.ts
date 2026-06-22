@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { login, register, logout } from '../../api/auth.api'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { login, register, logout, getMe, updateMe } from '../../api/auth.api'
 import { mergeCart } from '../../api/cart.api'
 import { useAuthStore } from '../../store/authStore'
 
@@ -50,6 +50,29 @@ export const useLogout = () => {
     onSuccess: () => {
       clearAuth()
       queryClient.clear()
+    },
+  })
+}
+
+export const useGetMe = () => {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  return useQuery({
+    queryKey: ['me'],
+    queryFn: getMe,
+    enabled: isAuthenticated,
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export const useUpdateMe = () => {
+  const queryClient = useQueryClient()
+  const updateUser = useAuthStore((s) => s.updateUser)
+
+  return useMutation({
+    mutationFn: (payload: { name?: string; phone?: string; profileImage?: string }) => updateMe(payload),
+    onSuccess: (updatedUser) => {
+      queryClient.setQueryData(['me'], updatedUser)
+      updateUser(updatedUser)
     },
   })
 }

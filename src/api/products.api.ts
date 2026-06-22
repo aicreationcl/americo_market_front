@@ -9,6 +9,12 @@ export interface ProductFilters {
   featured?: boolean
 }
 
+type BackendPaginatedProducts = {
+  success: boolean
+  data: Product[]
+  pagination: { page: number; limit: number; total: number; totalPages: number }
+}
+
 export const getProducts = async (filters: ProductFilters = {}): Promise<PaginatedResponse<Product>> => {
   if (import.meta.env.VITE_USE_MOCKS === 'true') {
     const { MOCK_PRODUCTS } = await import('@/mocks/data/products.mock')
@@ -29,8 +35,14 @@ export const getProducts = async (filters: ProductFilters = {}): Promise<Paginat
       totalPages: Math.ceil(searched.length / limit),
     }
   }
-  const { data } = await axiosClient.get<PaginatedResponse<Product>>('/products', { params: filters })
-  return data
+  const { data } = await axiosClient.get<BackendPaginatedProducts>('/products', { params: filters })
+  return {
+    data: data.data,
+    total: data.pagination.total,
+    page: data.pagination.page,
+    limit: data.pagination.limit,
+    totalPages: data.pagination.totalPages,
+  }
 }
 
 export const getFeaturedProducts = async (): Promise<Product[]> => {
@@ -38,8 +50,8 @@ export const getFeaturedProducts = async (): Promise<Product[]> => {
     const { MOCK_FEATURED_PRODUCTS } = await import('@/mocks/data/products.mock')
     return MOCK_FEATURED_PRODUCTS
   }
-  const { data } = await axiosClient.get<Product[]>('/products/featured')
-  return data
+  const { data } = await axiosClient.get<{ success: boolean; data: Product[] }>('/products/featured')
+  return data.data
 }
 
 export const getProductBySlug = async (slug: string): Promise<Product> => {
@@ -49,6 +61,6 @@ export const getProductBySlug = async (slug: string): Promise<Product> => {
     if (!product) throw new Error(`Producto no encontrado: ${slug}`)
     return product
   }
-  const { data } = await axiosClient.get<Product>(`/products/${slug}`)
-  return data
+  const { data } = await axiosClient.get<{ success: boolean; data: Product }>(`/products/${slug}`)
+  return data.data
 }

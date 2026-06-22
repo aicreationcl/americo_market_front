@@ -1,25 +1,107 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ShoppingCart, Store, Search, User, Menu, X, ChevronDown } from 'lucide-react'
+import { ShoppingCart, Store, Search, Menu, X, ChevronDown, LogOut, UserCircle, LayoutDashboard } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { UserAvatar } from '@/components/UserAvatar'
 import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
 import { useUIStore } from '@/store/uiStore'
 import { useCategories } from '@/shop/hooks/useCategories'
+import { useLogout } from '@/shop/hooks/useAuth'
 import { MobileMenu } from './MobileMenu'
+import type { User } from '@/types'
+
+function UserMenu({ user }: { user: User }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
+  const logoutMutation = useLogout()
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const handleLogout = async () => {
+    setOpen(false)
+    try {
+      await logoutMutation.mutateAsync()
+    } catch {
+      useAuthStore.getState().clearAuth()
+    }
+    navigate('/login', { replace: true })
+  }
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((p) => !p)}
+        className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium transition-colors hover:bg-muted"
+      >
+        <UserAvatar user={user} size="xs" />
+        <span className="hidden sm:inline">{user.name.split(' ')[0]}</span>
+        <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-full z-50 mt-1.5 min-w-[180px] rounded-xl border border-border bg-popover p-1.5 shadow-lg">
+          <div className="mb-1.5 px-3 py-1.5">
+            <p className="truncate text-xs font-semibold">{user.name}</p>
+            <p className="truncate text-[11px] text-muted-foreground">{user.email}</p>
+          </div>
+          <div className="my-1 h-px bg-border" />
+
+          <Link
+            to="/mi-cuenta/perfil"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
+          >
+            <UserCircle className="h-4 w-4 shrink-0 text-muted-foreground" />
+            Mi cuenta
+          </Link>
+
+          {user.role === 'admin' && (
+            <Link
+              to="/admin"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
+            >
+              <LayoutDashboard className="h-4 w-4 shrink-0 text-muted-foreground" />
+              Panel admin
+            </Link>
+          )}
+
+          <div className="my-1 h-px bg-border" />
+
+          <button
+            onClick={handleLogout}
+            disabled={logoutMutation.isPending}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-50"
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            {logoutMutation.isPending ? 'Cerrando...' : 'Cerrar sesión'}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [categoriesOpen, setCategoriesOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const itemCount = useCartStore((s) => s.itemCount)
   const openCart = useUIStore((s) => s.openCart)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const user = useAuthStore((s) => s.user)
   const { data: categories } = useCategories()
   const navigate = useNavigate()
-  const [mobileOpen, setMobileOpen] = useState(false)
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,19 +121,17 @@ export function Header() {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
               <Store className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-foreground">
-              AMERICO
-            </span>
+            <span className="text-xl font-bold tracking-tight text-foreground">AMERICO</span>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden items-center gap-6 md:flex">
-            <Link to="/" className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors">
+            <Link to="/" className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground">
               Inicio
             </Link>
             <div className="relative pb-1" onMouseLeave={() => setCategoriesOpen(false)}>
               <button
-                className="flex items-center gap-1 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+                className="flex items-center gap-1 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
                 onMouseEnter={() => setCategoriesOpen(true)}
               >
                 Catálogo <ChevronDown className="h-4 w-4" />
@@ -62,7 +142,7 @@ export function Header() {
                     <Link
                       key={cat._id}
                       to={`/catalogo/${cat.slug}`}
-                      className="block rounded-lg px-3 py-2 text-sm hover:bg-muted transition-colors"
+                      className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-muted"
                       onClick={() => setCategoriesOpen(false)}
                     >
                       {cat.name}
@@ -71,7 +151,7 @@ export function Header() {
                   <div className="mt-1 border-t border-border pt-1">
                     <Link
                       to="/catalogo"
-                      className="block rounded-lg px-3 py-2 text-sm font-medium text-primary hover:bg-muted transition-colors"
+                      className="block rounded-lg px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-muted"
                       onClick={() => setCategoriesOpen(false)}
                     >
                       Ver todo el catálogo →
@@ -117,20 +197,8 @@ export function Header() {
 
             {/* User */}
             <div className="hidden md:block">
-              {isAuthenticated ? (
-                <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link to="/mi-cuenta">
-                      <User className="mr-1 h-4 w-4" />
-                      {user?.name?.split(' ')[0]}
-                    </Link>
-                  </Button>
-                  {user?.role === 'admin' && (
-                    <Button variant="outline" size="sm" asChild>
-                      <Link to="/admin">Admin</Link>
-                    </Button>
-                  )}
-                </div>
+              {isAuthenticated && user ? (
+                <UserMenu user={user} />
               ) : (
                 <Button variant="outline" size="sm" asChild>
                   <Link to="/login">Ingresar</Link>

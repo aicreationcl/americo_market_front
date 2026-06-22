@@ -11,10 +11,11 @@ import { formatCLP } from '@/utils/formatCLP'
 import type { OrderStatus } from '@/types'
 
 const STATUS_STEPS: { key: OrderStatus; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { key: 'pending', label: 'Pedido recibido', icon: CheckCircle },
-  { key: 'confirmed', label: 'Confirmado', icon: CheckCircle },
+  { key: 'pending_payment', label: 'Pedido recibido', icon: CheckCircle },
+  { key: 'payment_confirmed', label: 'Pago confirmado', icon: CheckCircle },
   { key: 'preparing', label: 'En preparación', icon: Package },
-  { key: 'on_the_way', label: 'En camino', icon: Truck },
+  { key: 'in_transit', label: 'En camino', icon: Truck },
+  { key: 'ready_for_pickup', label: 'Listo para retiro', icon: Package },
   { key: 'delivered', label: 'Entregado', icon: Home },
 ]
 
@@ -114,11 +115,19 @@ export default function OrderTracking() {
 
             <div className="space-y-1.5 text-sm">
               <p className="text-muted-foreground">
-                Tipo: <strong>{order.fulfillmentType === 'delivery' ? 'Envío a domicilio' : 'Retiro en tienda'}</strong>
+                Tipo: <strong>{order.fulfillmentData?.type === 'delivery' ? 'Envío a domicilio' : 'Retiro en tienda'}</strong>
               </p>
-              {order.deliveryAddress && (
+              {order.fulfillmentData?.address?.commune && (
                 <p className="text-muted-foreground">
-                  Dirección: <strong>{order.deliveryAddress.street} {order.deliveryAddress.number}, {order.deliveryAddress.commune}</strong>
+                  Dirección: <strong>
+                    {[order.fulfillmentData.address.street, order.fulfillmentData.address.number].filter(Boolean).join(' ')}
+                    {order.fulfillmentData.address.commune ? `, ${order.fulfillmentData.address.commune}` : ''}
+                  </strong>
+                </p>
+              )}
+              {order.customerData?.name && (
+                <p className="text-muted-foreground">
+                  Cliente: <strong>{order.customerData.name}</strong>
                 </p>
               )}
             </div>

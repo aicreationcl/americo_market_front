@@ -18,17 +18,17 @@ export function OrderSummary({ shippingCost, commune }: OrderSummaryProps) {
 
       <div className="space-y-2 max-h-48 overflow-y-auto">
         {items.map((item) => (
-          <div key={item._id} className="flex items-center justify-between gap-2 text-sm">
+          <div key={item.product} className="flex items-center justify-between gap-2 text-sm">
             <div className="flex items-center gap-2 min-w-0">
               <div className="h-8 w-8 shrink-0 overflow-hidden rounded-md bg-stone-100">
                 <img
-                  src={item.product.images?.[0]?.url || '/placeholder-product.svg'}
-                  alt={item.product.name}
+                  src={item.imageUrl || '/placeholder-product.svg'}
+                  alt={item.name}
                   className="h-full w-full object-cover"
                 />
               </div>
               <span className="truncate text-muted-foreground">
-                {item.product.name} × {item.quantity}
+                {item.name} × {item.quantity}
               </span>
             </div>
             <span className="shrink-0 font-medium">{formatCLP(item.subtotal)}</span>

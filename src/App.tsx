@@ -4,6 +4,7 @@ import { AppRouter } from './router/AppRouter'
 import { Header } from '@/shop/components/layout/Header'
 import { Footer } from '@/shop/components/layout/Footer'
 import { CartDrawer } from '@/shop/components/cart/CartDrawer'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 function ShopShell() {
   const { pathname } = useLocation()
@@ -27,7 +28,7 @@ function ShopShell() {
 
 function App() {
   return (
-    <>
+    <ErrorBoundary>
       <Helmet
         defaultTitle="AMERICO Minimarket"
         titleTemplate="%s | AMERICO Minimarket"
@@ -36,7 +37,7 @@ function App() {
         <meta name="theme-color" content="#d97706" />
       </Helmet>
       <ShopShell />
-    </>
+    </ErrorBoundary>
   )
 }
 

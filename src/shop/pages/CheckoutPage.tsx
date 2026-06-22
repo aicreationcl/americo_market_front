@@ -13,6 +13,7 @@ import { ShippingCostDisplay } from '@/shop/components/checkout/ShippingCostDisp
 import { OrderSummary } from '@/shop/components/checkout/OrderSummary'
 import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
+import { formatCLP } from '@/utils/formatCLP'
 import { useShipping } from '@/shop/hooks/useShipping'
 import { useCreateOrder } from '@/shop/hooks/useOrders'
 import type { FulfillmentType } from '@/types'
@@ -53,18 +54,35 @@ export default function CheckoutPage() {
 
   const handleConfirm = async () => {
     try {
+      const customerName = isAuthenticated ? user!.name : guestInfo!.name
+      const customerEmail = isAuthenticated ? user!.email : guestInfo!.email
+      const customerPhone = isAuthenticated ? user?.phone : guestInfo?.phone
+
       const payload = {
-        fulfillmentType: fulfillment,
-        ...(isAuthenticated
-          ? {}
-          : { guestName: guestInfo?.name, guestEmail: guestInfo?.email, guestPhone: guestInfo?.phone }),
-        ...(fulfillment === 'delivery' && address
-          ? { deliveryAddress: address }
-          : {}),
+        customerData: {
+          name: customerName,
+          email: customerEmail,
+          phone: customerPhone,
+        },
+        fulfillmentData: {
+          type: fulfillment,
+          shippingCost: fulfillment === 'pickup' ? 0 : (shippingCost ?? 0),
+          ...(fulfillment === 'delivery' && address
+            ? {
+                address: {
+                  street: address.street,
+                  number: address.number,
+                  commune: address.commune,
+                  additionalInfo: [address.apartment, address.references].filter(Boolean).join(', ') || undefined,
+                },
+              }
+            : {}),
+        },
+        paymentMethod: 'cash_on_delivery',
       }
       const result = await createOrder.mutateAsync(payload)
       navigate(`/pedido/confirmacion/${result.orderId}`, {
-        state: { orderNumber: result.orderNumber, total: result.total, email: guestInfo?.email || user?.email },
+        state: { orderNumber: result.orderNumber, total: result.total, email: customerEmail },
       })
     } catch {
       toast.error('No se pudo crear el pedido. Intenta nuevamente.')
@@ -105,15 +123,15 @@ export default function CheckoutPage() {
                   <h2 className="mb-4 text-lg font-semibold">Revisión del pedido</h2>
                   <div className="space-y-3">
                     {items.map((item) => (
-                      <div key={item._id} className="flex items-center gap-3 rounded-xl border border-border p-3">
+                      <div key={item.product} className="flex items-center gap-3 rounded-xl border border-border p-3">
                         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-stone-100">
-                          <img src={item.product.images?.[0]?.url || '/placeholder-product.svg'} alt={item.product.name} className="h-full w-full object-cover" />
+                          <img src={item.imageUrl || '/placeholder-product.svg'} alt={item.name} className="h-full w-full object-cover" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="truncate text-sm font-medium">{item.product.name}</p>
+                          <p className="truncate text-sm font-medium">{item.name}</p>
                           <p className="text-xs text-muted-foreground">× {item.quantity}</p>
                         </div>
-                        <p className="text-sm font-bold">{item.subtotal.toLocaleString('es-CL', { style: 'currency', currency: 'CLP', minimumFractionDigits: 0 })}</p>
+                        <p className="text-sm font-bold">{formatCLP(item.subtotal)}</p>
                       </div>
                     ))}
                   </div>

@@ -9,8 +9,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { useLogin } from '@/shop/hooks/useAuth'
-import { useAuthStore } from '@/store/authStore'
-import { MOCK_CUSTOMER, MOCK_ADMIN } from '@/mocks/data/users.mock'
 
 const schema = z.object({
   email: z.string().email('Correo electrónico inválido'),
@@ -23,7 +21,7 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const loginMutation = useLogin()
-  const from = (location.state as { from?: string })?.from || '/'
+  const from = (location.state as { from?: string })?.from || '/mi-cuenta/perfil'
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -32,19 +30,12 @@ export default function LoginPage() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await loginMutation.mutateAsync(data)
-      toast.success('¡Bienvenido de vuelta!')
-      navigate(from, { replace: true })
+      const result = await loginMutation.mutateAsync(data)
+      toast.success(`¡Bienvenido, ${result.user.name}!`)
+      navigate(result.user.role === 'admin' ? '/admin' : from, { replace: true })
     } catch {
       toast.error('Correo o contraseña incorrectos')
     }
-  }
-
-  const mockLogin = (role: 'customer' | 'admin') => {
-    const user = role === 'admin' ? MOCK_ADMIN : MOCK_CUSTOMER
-    useAuthStore.getState().setAuth(user, `mock-token-${role}`)
-    toast.success(`Sesión iniciada como ${role === 'admin' ? 'administrador' : 'cliente'}`)
-    navigate(role === 'admin' ? '/admin' : from, { replace: true })
   }
 
   return (
@@ -63,28 +54,8 @@ export default function LoginPage() {
 
           {import.meta.env.VITE_USE_MOCKS === 'true' && (
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm">
-              <p className="mb-3 font-semibold text-amber-800">Modo demo activo</p>
-              <p className="mb-3 text-xs text-amber-700">Usa un usuario de prueba para explorar la app sin backend:</p>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 border-amber-300 bg-white text-amber-800 hover:bg-amber-100"
-                  onClick={() => mockLogin('customer')}
-                >
-                  Cliente demo
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 border-amber-300 bg-white text-amber-800 hover:bg-amber-100"
-                  onClick={() => mockLogin('admin')}
-                >
-                  Admin demo
-                </Button>
-              </div>
+              <p className="mb-2 font-semibold text-amber-800">Modo demo activo</p>
+              <p className="text-xs text-amber-700">Usa credenciales reales del backend.</p>
             </div>
           )}
 

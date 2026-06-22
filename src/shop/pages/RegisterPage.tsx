@@ -37,7 +37,7 @@ export default function RegisterPage() {
     try {
       await registerMutation.mutateAsync({ name: data.name, email: data.email, password: data.password })
       toast.success('¡Cuenta creada! Bienvenido a AMERICO')
-      navigate('/', { replace: true })
+      navigate('/mi-cuenta/perfil', { replace: true })
     } catch {
       toast.error('No se pudo crear la cuenta. El correo podría estar en uso.')
     }

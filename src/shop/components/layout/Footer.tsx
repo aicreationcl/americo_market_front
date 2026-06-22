@@ -16,7 +16,7 @@ export function Footer() {
               <span className="text-xl font-bold tracking-tight">AMERICO</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Tu minimarket de confianza en Santiago. Productos frescos, buen precio y envío rápido a tu domicilio.
+              Tu minimarket de confianza en La Pintana. Productos frescos, buen precio y envío rápido a tu domicilio.
             </p>
             <div className="flex gap-3">
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -80,7 +80,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                <span>Av. Ejemplo 1234, Santiago Centro, RM</span>
+                <span>Sgto. Daniel Rebolledo 0739, La Pintana, RM</span>
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4 shrink-0 text-primary" />

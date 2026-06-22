@@ -14,10 +14,16 @@ const LoginPage = lazy(() => import('@/shop/pages/LoginPage'))
 const RegisterPage = lazy(() => import('@/shop/pages/RegisterPage'))
 const NotFound = lazy(() => import('@/shop/pages/NotFound'))
 
+const AccountPage = lazy(() => import('@/shop/pages/AccountPage'))
+const AccountProfile = lazy(() => import('@/shop/pages/account/AccountProfile'))
+const AccountOrders = lazy(() => import('@/shop/pages/account/AccountOrders'))
+
 const AdminLayout = lazy(() => import('@/admin/components/layout/AdminLayout'))
 const AdminDashboard = lazy(() => import('@/admin/pages/AdminDashboard'))
 const AdminProducts = lazy(() => import('@/admin/pages/AdminProducts'))
 const AdminOrders = lazy(() => import('@/admin/pages/AdminOrders'))
+const AdminUsers = lazy(() => import('@/admin/pages/AdminUsers'))
+const AdminProfile = lazy(() => import('@/shop/pages/account/AccountProfile'))
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -53,14 +59,22 @@ export function AppRouter() {
         <Route path="/pedido/:orderNumber" element={<OrderTracking />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
+
+        {/* Mi Cuenta — rutas anidadas */}
         <Route
-          path="/mi-cuenta/*"
+          path="/mi-cuenta"
           element={
             <AuthGuard>
-              <div className="p-8 text-center text-muted-foreground">Mi cuenta (Fase 2)</div>
+              <AccountPage />
             </AuthGuard>
           }
-        />
+        >
+          <Route index element={<Navigate to="/mi-cuenta/perfil" replace />} />
+          <Route path="perfil" element={<AccountProfile />} />
+          <Route path="pedidos" element={<AccountOrders />} />
+        </Route>
+
+        {/* Panel Admin — rutas anidadas */}
         <Route
           path="/admin"
           element={
@@ -72,7 +86,10 @@ export function AppRouter() {
           <Route index element={<AdminDashboard />} />
           <Route path="productos" element={<AdminProducts />} />
           <Route path="pedidos" element={<AdminOrders />} />
+          <Route path="usuarios" element={<AdminUsers />} />
+          <Route path="perfil" element={<AdminProfile />} />
         </Route>
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
