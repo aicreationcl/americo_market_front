@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { getAdminUsers, updateUserRole } from '@/api/admin.api'
 import { toast } from 'sonner'
 import type { User } from '@/types'
@@ -14,6 +15,7 @@ export default function AdminUsers() {
   const queryClient = useQueryClient()
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState<'all' | 'customer' | 'admin'>('all')
+  const [confirmTarget, setConfirmTarget] = useState<User | null>(null)
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'users', search, roleFilter],
@@ -39,11 +41,16 @@ export default function AdminUsers() {
   const users = data?.data ?? []
 
   const toggleRole = (user: User) => {
-    const newRole = user.role === 'admin' ? 'customer' : 'admin'
-    const msg = newRole === 'admin'
-      ? `¿Dar permisos de administrador a ${user.name}?`
-      : `¿Quitar permisos de administrador a ${user.name}?`
-    if (confirm(msg)) roleMutation.mutate({ id: user._id, role: newRole })
+    setConfirmTarget(user)
+  }
+
+  const handleConfirmRole = () => {
+    if (!confirmTarget) return
+    const newRole = confirmTarget.role === 'admin' ? 'customer' : 'admin'
+    roleMutation.mutate(
+      { id: confirmTarget._id, role: newRole },
+      { onSettled: () => setConfirmTarget(null) }
+    )
   }
 
   return (
@@ -138,6 +145,21 @@ export default function AdminUsers() {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmTarget !== null}
+        onOpenChange={(open) => { if (!open) setConfirmTarget(null) }}
+        title={confirmTarget?.role === 'admin' ? 'Quitar permisos de admin' : 'Dar permisos de admin'}
+        description={
+          confirmTarget?.role === 'admin'
+            ? `${confirmTarget?.name} dejará de tener acceso al panel de administración.`
+            : `${confirmTarget?.name} podrá acceder al panel de administración.`
+        }
+        confirmLabel={confirmTarget?.role === 'admin' ? 'Quitar admin' : 'Hacer admin'}
+        variant={confirmTarget?.role === 'admin' ? 'destructive' : 'default'}
+        isLoading={roleMutation.isPending}
+        onConfirm={handleConfirmRole}
+      />
     </>
   )
 }

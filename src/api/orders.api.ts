@@ -58,7 +58,7 @@ interface BackendOrder {
   updatedAt?: string
 }
 
-const toFrontendOrder = (raw: BackendOrder): Order => ({
+export const toFrontendOrder = (raw: BackendOrder): Order => ({
   _id: raw._id,
   orderNumber: raw.orderNumber,
   customerData: {

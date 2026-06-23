@@ -1,5 +1,6 @@
 import axiosClient from './axiosClient'
 import type { Order, OrderStatus, User, Product } from '../types'
+import { toFrontendOrder } from './orders.api'
 
 export interface CreateProductPayload {
   name: string
@@ -75,10 +76,11 @@ export const getAdminOrders = async (params: {
 } = {}): Promise<AdminListResponse<Order>> => {
   const { data } = await axiosClient.get<{
     success: boolean
-    data: Order[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: any[]
     pagination: AdminListResponse<Order>['pagination']
   }>('/admin/orders', { params })
-  return { data: data.data, pagination: data.pagination }
+  return { data: data.data.map(toFrontendOrder), pagination: data.pagination }
 }
 
 export const updateOrderStatus = async (
