@@ -126,7 +126,7 @@ export function AddressForm({ onDataChange, defaultValues }: AddressFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Comuna</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona tu comuna..." />
