@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { getCategories } from '@/api/categories.api'
-import { createProduct, updateProduct } from '@/api/admin.api'
+import { createProduct, updateProduct, uploadProductImage } from '@/api/admin.api'
 import type { Product } from '@/types'
 
 const schema = z.object({
@@ -41,30 +41,12 @@ const numericOnChange = (field: { onChange: (v: number | undefined) => void }) =
     field.onChange(val === '' ? undefined : parseInt(val, 10))
   }
 
-const resizeToDataUrl = (file: File): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => {
-      const SIZE = 400
-      const canvas = document.createElement('canvas')
-      canvas.width = SIZE
-      canvas.height = SIZE
-      const ctx = canvas.getContext('2d')!
-      const scale = Math.max(SIZE / img.width, SIZE / img.height)
-      const x = (SIZE - img.width * scale) / 2
-      const y = (SIZE - img.height * scale) / 2
-      ctx.drawImage(img, x, y, img.width * scale, img.height * scale)
-      resolve(canvas.toDataURL('image/jpeg', 0.8))
-    }
-    img.onerror = reject
-    img.src = URL.createObjectURL(file)
-  })
-
 export function ProductForm({ open, onOpenChange, product }: ProductFormProps) {
   const queryClient = useQueryClient()
   const isEdit = !!product
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [pendingImage, setPendingImage] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
 
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
@@ -83,6 +65,7 @@ export function ProductForm({ open, onOpenChange, product }: ProductFormProps) {
   useEffect(() => {
     if (open) {
       setPendingImage(null)
+      setIsUploading(false)
       if (product) {
         const catId = typeof product.category === 'object' ? product.category._id : String(product.category)
         form.reset({
@@ -106,17 +89,20 @@ export function ProductForm({ open, onOpenChange, product }: ProductFormProps) {
     }
   }, [open, product, form])
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    try {
-      const dataUrl = await resizeToDataUrl(file)
-      setPendingImage(dataUrl)
-    } catch {
-      toast.error('No se pudo procesar la imagen')
-    }
     e.target.value = ''
-  }
+    setIsUploading(true)
+    try {
+      const result = await uploadProductImage(file)
+      setPendingImage(result.url)
+    } catch {
+      toast.error('No se pudo subir la imagen. Intenta nuevamente.')
+    } finally {
+      setIsUploading(false)
+    }
+  }, [])
 
   const currentImageUrl = pendingImage
     ?? (product?.images as unknown as Array<{ url: string }>)?.[0]?.url
@@ -195,16 +181,17 @@ export function ProductForm({ open, onOpenChange, product }: ProductFormProps) {
                     type="button"
                     variant="outline"
                     size="sm"
+                    disabled={isUploading}
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <Camera className="mr-2 h-4 w-4" />
-                    {currentImageUrl ? 'Cambiar imagen' : 'Subir imagen'}
+                    {isUploading ? 'Subiendo...' : currentImageUrl ? 'Cambiar imagen' : 'Subir imagen'}
                   </Button>
                   <p className="text-xs text-muted-foreground">
-                    JPG, PNG o WEBP. Se redimensiona a 400×400 px.
+                    JPG, PNG o WEBP — máx. 5 MB. Cloudinary optimiza automáticamente.
                   </p>
                   {pendingImage && (
-                    <p className="text-xs text-amber-600 font-medium">Nueva imagen pendiente de guardar</p>
+                    <p className="text-xs text-green-600 font-medium">Imagen subida a Cloudinary ✓</p>
                   )}
                 </div>
               </div>
@@ -347,8 +334,8 @@ export function ProductForm({ open, onOpenChange, product }: ProductFormProps) {
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? 'Guardando...' : isEdit ? 'Guardar cambios' : 'Crear producto'}
+              <Button type="submit" disabled={mutation.isPending || isUploading}>
+                {mutation.isPending ? 'Guardando...' : isUploading ? 'Subiendo imagen...' : isEdit ? 'Guardar cambios' : 'Crear producto'}
               </Button>
             </DialogFooter>
           </form>

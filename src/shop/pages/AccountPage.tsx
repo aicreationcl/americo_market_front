@@ -1,12 +1,13 @@
 import { NavLink, Outlet, Navigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { User, ShoppingBag } from 'lucide-react'
+import { User, ShoppingBag, MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/authStore'
 
 const TABS = [
   { to: '/mi-cuenta/perfil', label: 'Mi perfil', icon: User },
   { to: '/mi-cuenta/pedidos', label: 'Mis pedidos', icon: ShoppingBag },
+  { to: '/mi-cuenta/direcciones', label: 'Mis direcciones', icon: MapPin },
 ]
 
 export default function AccountPage() {

@@ -1,12 +1,12 @@
 export interface Address {
-  _id?: string
-  label?: string
+  _id: string
+  alias: string
   street: string
   number: string
-  apartment?: string
   commune: string
-  references?: string
-  isDefault?: boolean
+  region: string
+  additionalInfo?: string
+  isDefault: boolean
 }
 
 export interface User {

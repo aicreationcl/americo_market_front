@@ -17,6 +17,7 @@ const NotFound = lazy(() => import('@/shop/pages/NotFound'))
 const AccountPage = lazy(() => import('@/shop/pages/AccountPage'))
 const AccountProfile = lazy(() => import('@/shop/pages/account/AccountProfile'))
 const AccountOrders = lazy(() => import('@/shop/pages/account/AccountOrders'))
+const AccountAddresses = lazy(() => import('@/shop/pages/account/AccountAddresses'))
 
 const AdminLayout = lazy(() => import('@/admin/components/layout/AdminLayout'))
 const AdminDashboard = lazy(() => import('@/admin/pages/AdminDashboard'))
@@ -72,6 +73,7 @@ export function AppRouter() {
           <Route index element={<Navigate to="/mi-cuenta/perfil" replace />} />
           <Route path="perfil" element={<AccountProfile />} />
           <Route path="pedidos" element={<AccountOrders />} />
+          <Route path="direcciones" element={<AccountAddresses />} />
         </Route>
 
         {/* Panel Admin — rutas anidadas */}

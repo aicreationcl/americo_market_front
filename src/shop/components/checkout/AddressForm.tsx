@@ -2,10 +2,14 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useQuery } from '@tanstack/react-query'
+import { MapPin } from 'lucide-react'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useCommunes } from '@/shop/hooks/useShipping'
+import { useAuthStore } from '@/store/authStore'
+import { getAddresses } from '@/api/addresses.api'
 
 const schema = z.object({
   street: z.string().min(3, 'Ingresa la calle'),
@@ -23,7 +27,15 @@ interface AddressFormProps {
 }
 
 export function AddressForm({ onDataChange, defaultValues }: AddressFormProps) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const { data: communes = [] } = useCommunes()
+  const { data: savedAddresses = [] } = useQuery({
+    queryKey: ['addresses'],
+    queryFn: getAddresses,
+    enabled: isAuthenticated,
+    staleTime: 2 * 60 * 1000,
+  })
+
   const form = useForm<AddressData>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues || { street: '', number: '', apartment: '', commune: '', references: '' },
@@ -36,9 +48,41 @@ export function AddressForm({ onDataChange, defaultValues }: AddressFormProps) {
     onDataChange(values, isValid)
   }, [JSON.stringify(values), form.formState.isValid])
 
+  const handleSelectSaved = (addressId: string) => {
+    const addr = savedAddresses.find((a) => a._id === addressId)
+    if (!addr) return
+    form.reset({
+      street: addr.street,
+      number: addr.number,
+      apartment: '',
+      commune: addr.commune,
+      references: addr.additionalInfo ?? '',
+    })
+  }
+
   return (
     <Form {...form}>
       <div className="space-y-4">
+        {savedAddresses.length > 0 && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+            <div className="mb-2 flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5 text-amber-700" />
+              <span className="text-xs font-semibold text-amber-800">Usar dirección guardada</span>
+            </div>
+            <Select onValueChange={handleSelectSaved}>
+              <SelectTrigger className="h-8 text-xs bg-white">
+                <SelectValue placeholder="Seleccionar..." />
+              </SelectTrigger>
+              <SelectContent>
+                {savedAddresses.map((addr) => (
+                  <SelectItem key={addr._id} value={addr._id} className="text-xs">
+                    {addr.alias} — {addr.street} {addr.number}, {addr.commune}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         <div className="grid grid-cols-3 gap-3">
           <div className="col-span-2">
             <FormField

@@ -109,6 +109,17 @@ export const getAdminUsers = async (params: {
   return { data: data.data, pagination: data.pagination }
 }
 
+export const uploadProductImage = async (file: File): Promise<{ url: string; publicId: string }> => {
+  const formData = new FormData()
+  formData.append('image', file)
+  const { data } = await axiosClient.post<{ success: boolean; data: { url: string; publicId: string } }>(
+    '/admin/products/upload-image',
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
+  )
+  return data.data
+}
+
 export const updateUserRole = async (
   id: string,
   role: 'customer' | 'admin'
