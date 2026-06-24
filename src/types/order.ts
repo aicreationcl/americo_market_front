@@ -52,6 +52,16 @@ export interface StatusHistoryEntry {
   note?: string
 }
 
+export type PaymentMethod = 'cash_on_delivery' | 'cash_on_pickup' | 'webpay' | 'mercadopago'
+export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded'
+
+export interface OrderPayment {
+  method: PaymentMethod
+  status: PaymentStatus
+  transactionId?: string
+  paidAt?: string
+}
+
 export interface Order {
   _id: string
   orderNumber: string
@@ -61,6 +71,7 @@ export interface Order {
   subtotal: number
   total: number
   status: OrderStatus
+  payment?: OrderPayment
   statusHistory: StatusHistoryEntry[]
   notes?: string
   createdAt: string

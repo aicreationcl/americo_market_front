@@ -13,6 +13,7 @@ const OrderTracking = lazy(() => import('@/shop/pages/OrderTracking'))
 const LoginPage = lazy(() => import('@/shop/pages/LoginPage'))
 const RegisterPage = lazy(() => import('@/shop/pages/RegisterPage'))
 const NotFound = lazy(() => import('@/shop/pages/NotFound'))
+const PaymentResult = lazy(() => import('@/shop/pages/PaymentResult'))
 
 const AccountPage = lazy(() => import('@/shop/pages/AccountPage'))
 const AccountProfile = lazy(() => import('@/shop/pages/account/AccountProfile'))
@@ -58,6 +59,7 @@ export function AppRouter() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/pedido/confirmacion/:id" element={<OrderConfirmation />} />
         <Route path="/pedido/:orderNumber" element={<OrderTracking />} />
+        <Route path="/pago/resultado" element={<PaymentResult />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
 

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check } from 'lucide-react'
+import { Check, Banknote, ShoppingBag } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -16,11 +16,23 @@ import { useAuthStore } from '@/store/authStore'
 import { formatCLP } from '@/utils/formatCLP'
 import { useShipping } from '@/shop/hooks/useShipping'
 import { useCreateOrder } from '@/shop/hooks/useOrders'
-import type { FulfillmentType } from '@/types'
+import { initMercadoPago } from '@/api/payments.api'
+import type { FulfillmentType, PaymentMethod } from '@/types'
 import type { GuestInfoData } from '@/shop/components/checkout/GuestInfoForm'
 import type { AddressData } from '@/shop/components/checkout/AddressForm'
 
 const STEPS = ['Revisar pedido', 'Entrega', 'Confirmar']
+
+type CheckoutPaymentMethod = Extract<PaymentMethod, 'cash_on_delivery' | 'cash_on_pickup' | 'mercadopago'>
+
+interface PaymentOption {
+  id: CheckoutPaymentMethod
+  label: string
+  description: string
+  icon: React.ReactNode
+  disabled?: boolean
+  badge?: string
+}
 
 export default function CheckoutPage() {
   const items = useCartStore((s) => s.items)
@@ -35,12 +47,47 @@ export default function CheckoutPage() {
   const [guestInfo, setGuestInfo] = useState<GuestInfoData | null>(null)
   const [address, setAddress] = useState<AddressData | null>(null)
   const [addressValid, setAddressValid] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>('cash_on_delivery')
+  const [isRedirecting, setIsRedirecting] = useState(false)
+  const [pendingMpOrderId, setPendingMpOrderId] = useState<string | null>(null)
 
   const commune = fulfillment === 'delivery' ? (address?.commune || '') : ''
   const { data: shipping } = useShipping(commune, subtotal)
   const shippingCost = fulfillment === 'pickup' ? 0 : (shipping?.cost ?? undefined)
 
   if (items.length === 0) return <Navigate to="/catalogo" replace />
+
+  const effectivePaymentMethod: CheckoutPaymentMethod =
+    paymentMethod === 'mercadopago' ? 'mercadopago'
+    : fulfillment === 'pickup' ? 'cash_on_pickup'
+    : 'cash_on_delivery'
+
+  const paymentOptions: PaymentOption[] = [
+    {
+      id: fulfillment === 'pickup' ? 'cash_on_pickup' : 'cash_on_delivery',
+      label: fulfillment === 'pickup' ? 'Efectivo al retirar' : 'Efectivo al recibir',
+      description: 'Paga en efectivo cuando recibas tu pedido',
+      icon: <Banknote className="h-5 w-5" />,
+    },
+    {
+      id: 'mercadopago',
+      label: 'MercadoPago',
+      description: 'Tarjeta de crédito, débito o transferencia',
+      icon: (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4.5c4.14 0 7.5 3.36 7.5 7.5S16.14 19.5 12 19.5 4.5 16.14 4.5 12 7.86 4.5 12 4.5zm-1 3.5v8h2V8h-2z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'cash_on_delivery',
+      label: 'WebPay / Redcompra',
+      description: 'Tarjetas chilenas — Disponible próximamente',
+      icon: <ShoppingBag className="h-5 w-5" />,
+      disabled: true,
+      badge: 'Próximamente',
+    },
+  ]
 
   const canProceed = () => {
     if (step === 0) return true
@@ -53,17 +100,14 @@ export default function CheckoutPage() {
   }
 
   const handleConfirm = async () => {
+    if (isRedirecting) return
     try {
       const customerName = isAuthenticated ? user!.name : guestInfo!.name
       const customerEmail = isAuthenticated ? user!.email : guestInfo!.email
       const customerPhone = isAuthenticated ? user?.phone : guestInfo?.phone
 
       const payload = {
-        customerData: {
-          name: customerName,
-          email: customerEmail,
-          phone: customerPhone,
-        },
+        customerData: { name: customerName, email: customerEmail, phone: customerPhone },
         fulfillmentData: {
           type: fulfillment,
           shippingCost: fulfillment === 'pickup' ? 0 : (shippingCost ?? 0),
@@ -78,27 +122,47 @@ export default function CheckoutPage() {
               }
             : {}),
         },
-        paymentMethod: 'cash_on_delivery',
+        paymentMethod: effectivePaymentMethod,
       }
+
+      if (effectivePaymentMethod === 'mercadopago') {
+        setIsRedirecting(true)
+        // Reusar orden existente si un intento anterior falló en el paso de MP
+        const orderId = pendingMpOrderId ?? (await createOrder.mutateAsync(payload)).orderId
+        if (!pendingMpOrderId) setPendingMpOrderId(orderId)
+        const { init_point } = await initMercadoPago(orderId)
+        window.location.href = init_point
+        return
+      }
+
+      // Pago en efectivo — flujo normal
       const result = await createOrder.mutateAsync(payload)
       navigate(`/pedido/confirmacion/${result.orderId}`, {
         state: { orderNumber: result.orderNumber, total: result.total, email: customerEmail },
       })
     } catch {
-      toast.error('No se pudo crear el pedido. Intenta nuevamente.')
+      setIsRedirecting(false)
+      toast.error('No se pudo procesar el pedido. Intenta nuevamente.')
     }
+  }
+
+  const confirmButtonLabel = () => {
+    if (isRedirecting) return 'Redirigiendo a MercadoPago...'
+    if (createOrder.isPending) return 'Procesando...'
+    if (effectivePaymentMethod === 'mercadopago') return 'Ir a pagar con MercadoPago'
+    return 'Confirmar pedido'
   }
 
   return (
     <>
-      <Helmet><title>Checkout</title></Helmet>
+      <Helmet><title>Checkout — AMERICO</title></Helmet>
 
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
         {/* Stepper */}
         <div className="mb-8 flex items-center justify-center gap-0">
           {STEPS.map((label, i) => (
             <div key={label} className="flex items-center">
-              <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-colors ${i < step ? 'bg-primary text-primary-foreground' : i === step ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
+              <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-colors ${i <= step ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
                 {i < step ? <Check className="h-4 w-4" /> : i + 1}
               </div>
               <span className={`ml-2 text-sm font-medium ${i === step ? 'text-foreground' : 'text-muted-foreground'}`}>{label}</span>
@@ -163,9 +227,11 @@ export default function CheckoutPage() {
               )}
 
               {step === 2 && (
-                <div>
-                  <h2 className="mb-4 text-lg font-semibold">Confirmar pedido</h2>
-                  <div className="rounded-xl border border-border p-4 space-y-3 text-sm">
+                <div className="space-y-5">
+                  <h2 className="text-lg font-semibold">Confirmar pedido</h2>
+
+                  {/* Resumen de entrega */}
+                  <div className="rounded-xl border border-border p-4 space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Entrega</span>
                       <span className="font-medium">{fulfillment === 'delivery' ? `Envío a ${address?.commune}` : 'Retiro en tienda'}</span>
@@ -176,8 +242,58 @@ export default function CheckoutPage() {
                         <div className="flex justify-between"><span className="text-muted-foreground">Email</span><span>{guestInfo.email}</span></div>
                       </>
                     )}
-                    <Separator />
-                    <p className="text-xs text-muted-foreground text-center">Método de pago: <strong>Efectivo al recibir</strong></p>
+                  </div>
+
+                  {/* Selector de método de pago */}
+                  <div>
+                    <h3 className="mb-3 text-sm font-semibold">Método de pago</h3>
+                    <div className="space-y-2">
+                      {paymentOptions.map((option) => {
+                        const isSelected = effectivePaymentMethod === option.id
+                        if (option.disabled) {
+                          return (
+                            <div
+                              key={option.id}
+                              className="flex cursor-not-allowed items-center gap-3 rounded-xl border border-border bg-muted/30 p-4 opacity-50"
+                            >
+                              <div className="text-muted-foreground">{option.icon}</div>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-medium text-muted-foreground">{option.label}</span>
+                                  {option.badge && (
+                                    <span className="rounded-full bg-stone-200 px-2 py-0.5 text-xs font-medium text-stone-600">
+                                      {option.badge}
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="mt-0.5 text-xs text-muted-foreground">{option.description}</p>
+                              </div>
+                            </div>
+                          )
+                        }
+                        return (
+                          <button
+                            key={option.id}
+                            type="button"
+                            onClick={() => setPaymentMethod(option.id)}
+                            className={`flex w-full items-center gap-3 rounded-xl border p-4 text-left transition-colors ${
+                              isSelected
+                                ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                                : 'border-border hover:border-primary/50 hover:bg-muted/30'
+                            }`}
+                          >
+                            <div className={isSelected ? 'text-primary' : 'text-muted-foreground'}>
+                              {option.icon}
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-sm font-medium">{option.label}</p>
+                              <p className="mt-0.5 text-xs text-muted-foreground">{option.description}</p>
+                            </div>
+                            <div className={`h-4 w-4 rounded-full border-2 transition-colors ${isSelected ? 'border-primary bg-primary' : 'border-muted-foreground'}`} />
+                          </button>
+                        )
+                      })}
+                    </div>
                   </div>
                 </div>
               )}
@@ -192,7 +308,7 @@ export default function CheckoutPage() {
 
         {/* Navigation */}
         <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
-          <Button variant="outline" onClick={() => setStep((s) => s - 1)} disabled={step === 0}>
+          <Button variant="outline" onClick={() => setStep((s) => s - 1)} disabled={step === 0 || isRedirecting}>
             ← Anterior
           </Button>
           {step < STEPS.length - 1 ? (
@@ -200,8 +316,11 @@ export default function CheckoutPage() {
               Continuar →
             </Button>
           ) : (
-            <Button onClick={handleConfirm} disabled={createOrder.isPending || !canProceed()}>
-              {createOrder.isPending ? 'Procesando...' : 'Confirmar pedido'}
+            <Button
+              onClick={handleConfirm}
+              disabled={createOrder.isPending || isRedirecting || !canProceed()}
+            >
+              {confirmButtonLabel()}
             </Button>
           )}
         </div>

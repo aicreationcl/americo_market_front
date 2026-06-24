@@ -11,7 +11,7 @@ import { formatCLP } from '@/utils/formatCLP'
 import type { OrderStatus } from '@/types'
 
 const STATUS_STEPS: { key: OrderStatus; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { key: 'pending_payment', label: 'Pedido recibido', icon: CheckCircle },
+  { key: 'pending_payment', label: 'Pendiente de pago', icon: CheckCircle },
   { key: 'payment_confirmed', label: 'Pago confirmado', icon: CheckCircle },
   { key: 'preparing', label: 'En preparación', icon: Package },
   { key: 'in_transit', label: 'En camino', icon: Truck },

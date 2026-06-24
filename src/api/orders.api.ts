@@ -97,9 +97,8 @@ export const toFrontendOrder = (raw: BackendOrder): Order => ({
 })
 
 export const createOrder = async (payload: CreateOrderPayload): Promise<CreateOrderResult> => {
-  const { data } = await axiosClient.post<{ success: boolean; data: BackendOrder }>('/orders', payload)
-  const order = data.data
-  return { orderId: order._id, orderNumber: order.orderNumber, total: order.total }
+  const { data } = await axiosClient.post<{ success: boolean; data: CreateOrderResult }>('/orders', payload)
+  return data.data
 }
 
 export const getOrders = async (): Promise<Order[]> => {

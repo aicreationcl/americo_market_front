@@ -1,7 +1,7 @@
 export type { Category } from './category'
 export type { Product } from './product'
 export type { CartItem, Cart } from './cart'
-export type { Order, OrderItem, CustomerData, FulfillmentData, FulfillmentAddress, FulfillmentType, OrderStatus, StatusHistoryEntry } from './order'
+export type { Order, OrderItem, OrderPayment, CustomerData, FulfillmentData, FulfillmentAddress, FulfillmentType, OrderStatus, PaymentMethod, PaymentStatus, StatusHistoryEntry } from './order'
 export type { User, Address } from './user'
 export type { ShippingZone, ShippingCalculation, PickupStore } from './shipping'
 export type { PaginatedResponse, ApiError } from './api'
