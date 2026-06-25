@@ -60,10 +60,13 @@ const resolveResult = (params: URLSearchParams): { resultType: ResultType; order
     return { resultType, orderNumber: externalRef }
   }
 
-  // WebPay redirect params (Sprint 6) — legible pero sin lógica aún
+  // WebPay redirect params — status=approved|rejected enviado por el backend
   const status = params.get('status')
   if (status) {
-    const resultType: ResultType = status === 'ok' ? 'success' : status === 'failed' ? 'failed' : 'unknown'
+    const resultType: ResultType =
+      status === 'approved' ? 'success'
+      : status === 'rejected' ? 'failed'
+      : 'unknown'
     return { resultType, orderNumber: params.get('orderNumber') }
   }
 

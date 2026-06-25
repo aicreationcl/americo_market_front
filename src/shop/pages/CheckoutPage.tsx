@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, Banknote, ShoppingBag } from 'lucide-react'
+import { Check, Banknote, CreditCard } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -16,14 +16,14 @@ import { useAuthStore } from '@/store/authStore'
 import { formatCLP } from '@/utils/formatCLP'
 import { useShipping } from '@/shop/hooks/useShipping'
 import { useCreateOrder } from '@/shop/hooks/useOrders'
-import { initMercadoPago } from '@/api/payments.api'
+import { initMercadoPago, initWebpay } from '@/api/payments.api'
 import type { FulfillmentType, PaymentMethod } from '@/types'
 import type { GuestInfoData } from '@/shop/components/checkout/GuestInfoForm'
 import type { AddressData } from '@/shop/components/checkout/AddressForm'
 
 const STEPS = ['Revisar pedido', 'Entrega', 'Confirmar']
 
-type CheckoutPaymentMethod = Extract<PaymentMethod, 'cash_on_delivery' | 'cash_on_pickup' | 'mercadopago'>
+type CheckoutPaymentMethod = Extract<PaymentMethod, 'cash_on_delivery' | 'cash_on_pickup' | 'mercadopago' | 'webpay'>
 
 interface PaymentOption {
   id: CheckoutPaymentMethod
@@ -50,6 +50,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>('cash_on_delivery')
   const [isRedirecting, setIsRedirecting] = useState(false)
   const [pendingMpOrderId, setPendingMpOrderId] = useState<string | null>(null)
+  const [pendingWpOrderId, setPendingWpOrderId] = useState<string | null>(null)
 
   const commune = fulfillment === 'delivery' ? (address?.commune || '') : ''
   const { data: shipping } = useShipping(commune, subtotal)
@@ -59,6 +60,7 @@ export default function CheckoutPage() {
 
   const effectivePaymentMethod: CheckoutPaymentMethod =
     paymentMethod === 'mercadopago' ? 'mercadopago'
+    : paymentMethod === 'webpay' ? 'webpay'
     : fulfillment === 'pickup' ? 'cash_on_pickup'
     : 'cash_on_delivery'
 
@@ -80,12 +82,10 @@ export default function CheckoutPage() {
       ),
     },
     {
-      id: 'cash_on_delivery',
+      id: 'webpay',
       label: 'WebPay / Redcompra',
-      description: 'Tarjetas chilenas — Disponible próximamente',
-      icon: <ShoppingBag className="h-5 w-5" />,
-      disabled: true,
-      badge: 'Próximamente',
+      description: 'Tarjetas de débito, crédito y prepago chilenas',
+      icon: <CreditCard className="h-5 w-5" />,
     },
   ]
 
@@ -127,11 +127,29 @@ export default function CheckoutPage() {
 
       if (effectivePaymentMethod === 'mercadopago') {
         setIsRedirecting(true)
-        // Reusar orden existente si un intento anterior falló en el paso de MP
         const orderId = pendingMpOrderId ?? (await createOrder.mutateAsync(payload)).orderId
         if (!pendingMpOrderId) setPendingMpOrderId(orderId)
         const { init_point } = await initMercadoPago(orderId)
         window.location.href = init_point
+        return
+      }
+
+      if (effectivePaymentMethod === 'webpay') {
+        setIsRedirecting(true)
+        const orderId = pendingWpOrderId ?? (await createOrder.mutateAsync(payload)).orderId
+        if (!pendingWpOrderId) setPendingWpOrderId(orderId)
+        const { token, url } = await initWebpay(orderId)
+        // Transbank requiere form POST — no se puede usar window.location.href
+        const form = document.createElement('form')
+        form.method = 'POST'
+        form.action = url
+        const input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = 'token_ws'
+        input.value = token
+        form.appendChild(input)
+        document.body.appendChild(form)
+        form.submit()
         return
       }
 
@@ -147,9 +165,13 @@ export default function CheckoutPage() {
   }
 
   const confirmButtonLabel = () => {
-    if (isRedirecting) return 'Redirigiendo a MercadoPago...'
+    if (isRedirecting) {
+      if (effectivePaymentMethod === 'webpay') return 'Redirigiendo a WebPay...'
+      return 'Redirigiendo a MercadoPago...'
+    }
     if (createOrder.isPending) return 'Procesando...'
     if (effectivePaymentMethod === 'mercadopago') return 'Ir a pagar con MercadoPago'
+    if (effectivePaymentMethod === 'webpay') return 'Ir a pagar con WebPay'
     return 'Confirmar pedido'
   }
 

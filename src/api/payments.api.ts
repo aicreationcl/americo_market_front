@@ -13,12 +13,15 @@ export const initMercadoPago = async (orderId: string): Promise<MPInitResult> =>
   return data.data
 }
 
-// Stub reservado para Sprint 6
 export interface WebpayInitResult {
-  url: string
   token: string
+  url: string
 }
 
-export const initWebpay = async (_orderId: string): Promise<WebpayInitResult> => {
-  throw new Error('WebPay Plus se implementa en Sprint 6')
+export const initWebpay = async (orderId: string): Promise<WebpayInitResult> => {
+  const { data } = await axiosClient.post<{ success: boolean; data: WebpayInitResult }>(
+    '/payments/webpay/init',
+    { orderId }
+  )
+  return data.data
 }
