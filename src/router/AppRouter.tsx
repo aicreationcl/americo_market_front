@@ -12,6 +12,11 @@ const OrderConfirmation = lazy(() => import('@/shop/pages/OrderConfirmation'))
 const OrderTracking = lazy(() => import('@/shop/pages/OrderTracking'))
 const LoginPage = lazy(() => import('@/shop/pages/LoginPage'))
 const RegisterPage = lazy(() => import('@/shop/pages/RegisterPage'))
+const ForgotPasswordPage = lazy(() => import('@/shop/pages/ForgotPasswordPage'))
+const ResetPasswordPage = lazy(() => import('@/shop/pages/ResetPasswordPage'))
+const TermsPage = lazy(() => import('@/shop/pages/TermsPage'))
+const PrivacyPage = lazy(() => import('@/shop/pages/PrivacyPage'))
+const ShippingPolicyPage = lazy(() => import('@/shop/pages/ShippingPolicyPage'))
 const NotFound = lazy(() => import('@/shop/pages/NotFound'))
 const PaymentResult = lazy(() => import('@/shop/pages/PaymentResult'))
 
@@ -62,6 +67,11 @@ export function AppRouter() {
         <Route path="/pago/resultado" element={<PaymentResult />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
+        <Route path="/recuperar-contrasena" element={<ForgotPasswordPage />} />
+        <Route path="/restablecer-contrasena" element={<ResetPasswordPage />} />
+        <Route path="/terminos" element={<TermsPage />} />
+        <Route path="/privacidad" element={<PrivacyPage />} />
+        <Route path="/politica-envios" element={<ShippingPolicyPage />} />
 
         {/* Mi Cuenta — rutas anidadas */}
         <Route

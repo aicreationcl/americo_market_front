@@ -63,7 +63,7 @@ export function DeliverySelector({ value, onChange, addressContent, pickupConten
             {pickupContent || (
               <div className="rounded-xl border border-border bg-muted/30 p-4">
                 <p className="text-sm font-medium">Tienda AMERICO</p>
-                <p className="mt-1 text-sm text-muted-foreground">Av. Ejemplo 1234, Santiago Centro</p>
+                <p className="mt-1 text-sm text-muted-foreground">Sgto. Daniel Rebolledo 0739, La Pintana</p>
                 <p className="text-sm text-muted-foreground">Lun–Sáb: 08:00–21:00 · Dom: 09:00–19:00</p>
               </div>
             )}

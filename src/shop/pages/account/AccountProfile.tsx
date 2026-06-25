@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Skeleton } from '@/components/ui/skeleton'
 import { UserAvatar } from '@/components/UserAvatar'
-import { useGetMe, useUpdateMe } from '@/shop/hooks/useAuth'
+import { useGetMe, useUpdateMe, useChangePassword } from '@/shop/hooks/useAuth'
 
 const schema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
@@ -17,6 +17,17 @@ const schema = z.object({
 })
 
 type FormData = z.infer<typeof schema>
+
+const passwordSchema = z.object({
+  currentPassword: z.string().min(1, 'Ingresa tu contraseña actual'),
+  newPassword: z.string().min(6, 'Mínimo 6 caracteres'),
+  confirmPassword: z.string().min(1, 'Confirma la nueva contraseña'),
+}).refine((d) => d.newPassword === d.confirmPassword, {
+  message: 'Las contraseñas no coinciden',
+  path: ['confirmPassword'],
+})
+
+type PasswordFormData = z.infer<typeof passwordSchema>
 
 const MAX_SIZE = 150
 
@@ -42,6 +53,7 @@ function resizeToDataUrl(file: File): Promise<string> {
 export default function AccountProfile() {
   const { data: user, isLoading } = useGetMe()
   const updateMutation = useUpdateMe()
+  const changePasswordMutation = useChangePassword()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [pendingImage, setPendingImage] = useState<string | null>(null)
@@ -49,6 +61,11 @@ export default function AccountProfile() {
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { name: '', phone: '' },
+  })
+
+  const passwordForm = useForm<PasswordFormData>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: { currentPassword: '', newPassword: '', confirmPassword: '' },
   })
 
   useEffect(() => {
@@ -86,6 +103,16 @@ export default function AccountProfile() {
       toast.success('Perfil actualizado correctamente')
     } catch {
       toast.error('No se pudo actualizar el perfil')
+    }
+  }
+
+  const onPasswordSubmit = async (data: PasswordFormData) => {
+    try {
+      await changePasswordMutation.mutateAsync({ currentPassword: data.currentPassword, newPassword: data.newPassword })
+      passwordForm.reset()
+      toast.success('Contraseña cambiada correctamente')
+    } catch {
+      toast.error('La contraseña actual es incorrecta')
     }
   }
 
@@ -192,6 +219,57 @@ export default function AccountProfile() {
                 {updateMutation.isPending ? 'Guardando...' : 'Guardar cambios'}
               </Button>
             </div>
+          </form>
+        </Form>
+      </div>
+      {/* Change password */}
+      <div className="rounded-xl border border-border bg-background p-5">
+        <h2 className="mb-4 text-sm font-semibold">Cambiar contraseña</h2>
+
+        <Form {...passwordForm}>
+          <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
+            <FormField
+              control={passwordForm.control}
+              name="currentPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contraseña actual</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" autoComplete="current-password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={passwordForm.control}
+              name="newPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nueva contraseña</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Mínimo 6 caracteres" autoComplete="new-password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={passwordForm.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirmar nueva contraseña</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Repite la contraseña" autoComplete="new-password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" variant="outline" disabled={changePasswordMutation.isPending}>
+              {changePasswordMutation.isPending ? 'Cambiando...' : 'Cambiar contraseña'}
+            </Button>
           </form>
         </Form>
       </div>

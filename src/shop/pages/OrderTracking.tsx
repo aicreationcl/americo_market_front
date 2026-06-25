@@ -46,7 +46,7 @@ export default function OrderTracking() {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Ej: AME-2024-00001"
+            placeholder="Ej: AME-2026-00001"
             className="flex-1"
           />
           <Button type="submit" disabled={isLoading}>

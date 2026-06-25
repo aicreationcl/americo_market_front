@@ -36,3 +36,15 @@ export const updateMe = async (payload: { name?: string; phone?: string; profile
   const { data } = await axiosClient.patch<UserResponse>('/auth/me', payload)
   return data.data
 }
+
+export const forgotPassword = async (email: string): Promise<void> => {
+  await axiosClient.post('/auth/forgot-password', { email })
+}
+
+export const resetPassword = async (token: string, newPassword: string): Promise<void> => {
+  await axiosClient.post('/auth/reset-password', { token, newPassword })
+}
+
+export const changePassword = async (currentPassword: string, newPassword: string): Promise<void> => {
+  await axiosClient.patch('/auth/me/password', { currentPassword, newPassword })
+}

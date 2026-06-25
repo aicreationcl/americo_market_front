@@ -73,8 +73,8 @@ export default function CheckoutPage() {
     },
     {
       id: 'mercadopago',
-      label: 'MercadoPago',
-      description: 'Tarjeta de crédito, débito o transferencia',
+      label: 'Tarjeta o transferencia',
+      description: 'Paga con débito, crédito o transferencia vía MercadoPago',
       icon: (
         <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4.5c4.14 0 7.5 3.36 7.5 7.5S16.14 19.5 12 19.5 4.5 16.14 4.5 12 7.86 4.5 12 4.5zm-1 3.5v8h2V8h-2z" />
@@ -165,12 +165,9 @@ export default function CheckoutPage() {
   }
 
   const confirmButtonLabel = () => {
-    if (isRedirecting) {
-      if (effectivePaymentMethod === 'webpay') return 'Redirigiendo a WebPay...'
-      return 'Redirigiendo a MercadoPago...'
-    }
+    if (isRedirecting) return 'Preparando el pago...'
     if (createOrder.isPending) return 'Procesando...'
-    if (effectivePaymentMethod === 'mercadopago') return 'Ir a pagar con MercadoPago'
+    if (effectivePaymentMethod === 'mercadopago') return 'Ir a pagar'
     if (effectivePaymentMethod === 'webpay') return 'Ir a pagar con WebPay'
     return 'Confirmar pedido'
   }

@@ -90,6 +90,12 @@ export default function LoginPage() {
           </Form>
 
           <p className="text-center text-sm text-muted-foreground">
+            <Link to="/recuperar-contrasena" className="font-medium text-primary hover:underline">
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </p>
+
+          <p className="text-center text-sm text-muted-foreground">
             ¿No tienes cuenta?{' '}
             <Link to="/registro" className="font-medium text-primary hover:underline">
               Regístrate gratis

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { login, register, logout, getMe, updateMe } from '../../api/auth.api'
+import { login, register, logout, getMe, updateMe, forgotPassword, resetPassword, changePassword } from '../../api/auth.api'
 import { mergeCart } from '../../api/cart.api'
 import { useAuthStore } from '../../store/authStore'
 
@@ -76,3 +76,12 @@ export const useUpdateMe = () => {
     },
   })
 }
+
+export const useForgotPassword = () =>
+  useMutation({ mutationFn: (email: string) => forgotPassword(email) })
+
+export const useResetPassword = () =>
+  useMutation({ mutationFn: ({ token, newPassword }: { token: string; newPassword: string }) => resetPassword(token, newPassword) })
+
+export const useChangePassword = () =>
+  useMutation({ mutationFn: ({ currentPassword, newPassword }: { currentPassword: string; newPassword: string }) => changePassword(currentPassword, newPassword) })

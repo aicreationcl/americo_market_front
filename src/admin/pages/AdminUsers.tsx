@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
-import { Search } from 'lucide-react'
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,19 +11,23 @@ import { getAdminUsers, updateUserRole } from '@/api/admin.api'
 import { toast } from 'sonner'
 import type { User } from '@/types'
 
+const PAGE_SIZE = 15
+
 export default function AdminUsers() {
   const queryClient = useQueryClient()
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState<'all' | 'customer' | 'admin'>('all')
   const [confirmTarget, setConfirmTarget] = useState<User | null>(null)
+  const [page, setPage] = useState(1)
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin', 'users', search, roleFilter],
+    queryKey: ['admin', 'users', search, roleFilter, page],
     queryFn: () =>
       getAdminUsers({
         search: search || undefined,
         role: roleFilter === 'all' ? undefined : roleFilter,
-        limit: 50,
+        page,
+        limit: PAGE_SIZE,
       }),
     staleTime: 30 * 1000,
   })
@@ -39,6 +43,8 @@ export default function AdminUsers() {
   })
 
   const users = data?.data ?? []
+
+  const totalPages = data?.pagination.totalPages ?? 1
 
   const toggleRole = (user: User) => {
     setConfirmTarget(user)
@@ -72,7 +78,7 @@ export default function AdminUsers() {
             <Input
               placeholder="Buscar por nombre o correo..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setPage(1) }}
               className="pl-9"
             />
           </div>
@@ -82,7 +88,7 @@ export default function AdminUsers() {
                 key={r}
                 size="sm"
                 variant={roleFilter === r ? 'default' : 'outline'}
-                onClick={() => setRoleFilter(r)}
+                onClick={() => { setRoleFilter(r); setPage(1) }}
               >
                 {r === 'all' ? 'Todos' : r === 'customer' ? 'Clientes' : 'Admins'}
               </Button>
@@ -145,6 +151,34 @@ export default function AdminUsers() {
           </div>
         </div>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between text-sm">
+          <p className="text-muted-foreground">
+            Página {page} de {totalPages}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1 || isLoading}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Anterior
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages || isLoading}
+            >
+              Siguiente
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
 
       <ConfirmDialog
         open={confirmTarget !== null}

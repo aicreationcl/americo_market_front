@@ -52,7 +52,7 @@ export default function Home() {
             {[
               { icon: Truck, title: 'Envío rápido', desc: 'Despacho en todo Santiago RM' },
               { icon: Clock, title: 'Horario extendido', desc: 'Lun–Sáb 08:00–21:00' },
-              { icon: ShieldCheck, title: 'Pago seguro', desc: 'Contra entrega o en tienda' },
+              { icon: ShieldCheck, title: 'Paga como quieras', desc: 'Efectivo, débito, crédito o transferencia' },
             ].map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex items-center gap-3 rounded-xl border border-border bg-background p-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">

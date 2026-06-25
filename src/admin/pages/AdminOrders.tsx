@@ -1,11 +1,15 @@
+import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
+import { Download, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { getAdminOrders, updateOrderStatus } from '@/api/admin.api'
 import { formatCLP } from '@/utils/formatCLP'
 import { toast } from 'sonner'
+import { useAuthStore } from '@/store/authStore'
 import type { OrderStatus } from '@/types'
 
 const STATUS_CONFIG: Record<OrderStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
@@ -20,13 +24,16 @@ const STATUS_CONFIG: Record<OrderStatus, { label: string; variant: 'default' | '
 }
 
 const ALL_STATUSES = Object.keys(STATUS_CONFIG) as OrderStatus[]
+const PAGE_SIZE = 15
 
 export default function AdminOrders() {
   const queryClient = useQueryClient()
+  const accessToken = useAuthStore((s) => s.accessToken)
+  const [page, setPage] = useState(1)
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin', 'orders'],
-    queryFn: () => getAdminOrders({ limit: 50 }),
+    queryKey: ['admin', 'orders', page],
+    queryFn: () => getAdminOrders({ page, limit: PAGE_SIZE }),
     staleTime: 30 * 1000,
   })
 
@@ -41,18 +48,48 @@ export default function AdminOrders() {
     onError: () => toast.error('No se pudo actualizar el estado'),
   })
 
+  const handleExport = () => {
+    const apiBase = import.meta.env.VITE_API_URL ?? '/api/v1'
+    const url = `${apiBase}/admin/orders/export`
+    const link = document.createElement('a')
+    link.href = url
+    if (accessToken) {
+      // Use fetch with auth header for download
+      fetch(url, { headers: { Authorization: `Bearer ${accessToken}` }, credentials: 'include' })
+        .then((res) => res.blob())
+        .then((blob) => {
+          const objUrl = URL.createObjectURL(blob)
+          link.href = objUrl
+          link.download = `pedidos-AMERICO-${new Date().toISOString().slice(0, 10)}.csv`
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          URL.revokeObjectURL(objUrl)
+        })
+        .catch(() => toast.error('No se pudo exportar el CSV'))
+    }
+  }
+
   const orders = data?.data ?? []
+  const totalPages = data?.pagination.totalPages ?? 1
+  const total = data?.pagination.total ?? 0
 
   return (
     <>
       <Helmet><title>Pedidos — Admin AMERICO</title></Helmet>
 
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Pedidos</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {isLoading ? '...' : `${data?.pagination.total ?? 0} órdenes en total`}
-          </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Pedidos</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {isLoading ? '...' : `${total} órdenes en total`}
+            </p>
+          </div>
+          <Button variant="outline" size="sm" onClick={handleExport} className="shrink-0">
+            <Download className="mr-2 h-4 w-4" />
+            Exportar CSV
+          </Button>
         </div>
 
         <div className="rounded-xl border border-border bg-background overflow-hidden">
@@ -120,6 +157,34 @@ export default function AdminOrders() {
             )}
           </div>
         </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between text-sm">
+            <p className="text-muted-foreground">
+              Página {page} de {totalPages}
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1 || isLoading}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages || isLoading}
+              >
+                Siguiente
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   )
