@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Package, ClipboardList, Users, LogOut, Menu, X, Store } from 'lucide-react'
+import { LayoutDashboard, Package, ClipboardList, Users, BarChart2, LogOut, Menu, X, Store } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { UserAvatar } from '@/components/UserAvatar'
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { to: '/admin/productos', label: 'Productos', icon: Package, end: false },
   { to: '/admin/pedidos', label: 'Pedidos', icon: ClipboardList, end: false },
   { to: '/admin/usuarios', label: 'Usuarios', icon: Users, end: false },
+  { to: '/admin/reportes', label: 'Reportes', icon: BarChart2, end: false },
 ]
 
 function NavItems({ onClose }: { onClose?: () => void }) {

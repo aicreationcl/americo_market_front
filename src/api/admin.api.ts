@@ -120,6 +120,19 @@ export const uploadProductImage = async (file: File): Promise<{ url: string; pub
   return data.data
 }
 
+export interface AnalyticsData {
+  revenueToday: number
+  revenueThisMonth: number
+  topProducts: Array<{ name: string; totalSold: number; revenue: number }>
+  topCategories: Array<{ category: string; revenue: number; orderCount: number }>
+  topCommunes: Array<{ commune: string; orderCount: number }>
+}
+
+export const getAdminAnalytics = async (): Promise<AnalyticsData> => {
+  const { data } = await axiosClient.get<{ success: boolean; data: AnalyticsData }>('/admin/analytics')
+  return data.data
+}
+
 export const updateUserRole = async (
   id: string,
   role: 'customer' | 'admin'

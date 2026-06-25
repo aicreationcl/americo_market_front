@@ -77,10 +77,10 @@ export const toFrontendOrder = (raw: BackendOrder): Order => ({
     subtotal: item.subtotal ?? (item.price ?? 0) * item.quantity,
   })),
   subtotal: raw.subtotal ?? 0,
-  total: raw.total,
+  total: raw.total ?? 0,
   fulfillmentData: {
     type: raw.fulfillment?.type ?? 'pickup',
-    shippingCost: raw.shippingCost,
+    shippingCost: raw.shippingCost ?? 0,
     address: raw.fulfillment?.address as Order['fulfillmentData']['address'],
     pickupStore: raw.fulfillment?.pickupStore as Order['fulfillmentData']['pickupStore'],
     estimatedDate: raw.fulfillment?.estimatedDate,

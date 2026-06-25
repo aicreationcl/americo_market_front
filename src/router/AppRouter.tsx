@@ -31,6 +31,7 @@ const AdminProducts = lazy(() => import('@/admin/pages/AdminProducts'))
 const AdminOrders = lazy(() => import('@/admin/pages/AdminOrders'))
 const AdminUsers = lazy(() => import('@/admin/pages/AdminUsers'))
 const AdminProfile = lazy(() => import('@/shop/pages/account/AccountProfile'))
+const AdminReportes = lazy(() => import('@/admin/pages/AdminReportes'))
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -63,6 +64,7 @@ export function AppRouter() {
         <Route path="/carrito" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/pedido/confirmacion/:id" element={<OrderConfirmation />} />
+        <Route path="/pedido/seguimiento" element={<OrderTracking />} />
         <Route path="/pedido/:orderNumber" element={<OrderTracking />} />
         <Route path="/pago/resultado" element={<PaymentResult />} />
         <Route path="/login" element={<LoginPage />} />
@@ -102,6 +104,7 @@ export function AppRouter() {
           <Route path="pedidos" element={<AdminOrders />} />
           <Route path="usuarios" element={<AdminUsers />} />
           <Route path="perfil" element={<AdminProfile />} />
+          <Route path="reportes" element={<AdminReportes />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
