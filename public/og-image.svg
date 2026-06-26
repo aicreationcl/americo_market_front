@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Ground -->
+  <rect width="1200" height="630" fill="#FFFFFF"/>
+
+  <!-- Amber left panel -->
+  <rect width="280" height="630" fill="#D97706"/>
+
+  <!-- Decorative amber strip at far right edge -->
+  <rect x="1168" width="32" height="630" fill="#FEF3C7"/>
+
+  <!-- Large A lettermark in panel (decorative, slightly oversized) -->
+  <text
+    x="140" y="415"
+    font-family="'Arial Black', Arial, sans-serif"
+    font-size="260"
+    font-weight="900"
+    text-anchor="middle"
+    fill="white"
+    opacity="0.18">A</text>
+
+  <!-- A lettermark foreground (clean, centered) -->
+  <text
+    x="140" y="380"
+    font-family="'Arial Black', Arial, sans-serif"
+    font-size="200"
+    font-weight="900"
+    text-anchor="middle"
+    fill="white"
+    opacity="0.95">A</text>
+
+  <!-- AMERICO wordmark -->
+  <text
+    x="340" y="234"
+    font-family="'Arial Black', Arial, sans-serif"
+    font-size="88"
+    font-weight="900"
+    fill="#1C1917"
+    letter-spacing="-2">AMERICO</text>
+
+  <!-- Minimarket label -->
+  <text
+    x="344" y="285"
+    font-family="Arial, sans-serif"
+    font-size="30"
+    font-weight="700"
+    fill="#D97706"
+    letter-spacing="5">MINIMARKET</text>
+
+  <!-- Separator -->
+  <rect x="340" y="316" width="680" height="2" fill="#E3DDD5"/>
+
+  <!-- Tagline line 1 -->
+  <text
+    x="340" y="375"
+    font-family="Arial, sans-serif"
+    font-size="33"
+    font-weight="400"
+    fill="#44403C">Todo lo que necesitas,</text>
+
+  <!-- Tagline line 2 (amber accent) -->
+  <text
+    x="340" y="422"
+    font-family="Arial, sans-serif"
+    font-size="33"
+    font-weight="700"
+    fill="#D97706">a tu puerta.</text>
+
+  <!-- Location & service -->
+  <text
+    x="340" y="520"
+    font-family="Arial, sans-serif"
+    font-size="21"
+    fill="#A8A29E">La Pintana, Santiago · Envíos y retiro en tienda</text>
+
+  <!-- Thin border -->
+  <rect width="1200" height="630" fill="none" stroke="#E3DDD5" stroke-width="1"/>
+</svg>
