@@ -12,8 +12,8 @@ import imgCachantun   from '@/assets/market/cachantun_sin_gas_1.webp'
 import imgJugo        from '@/assets/market/jugo_naranja_watt_-lg.webp'
 import imgCerveza     from '@/assets/market/Pack-6-un-Cerveza-Escudo-Lager-55°-350-cc.webp'
 import imgLeche       from '@/assets/market/leche_soprole_entera_1lt.png'
-import imgYogurt      from '@/assets/market/yogur-nestle-natural-x4.png'
 import imgQueso       from '@/assets/market/queso_gouda_laminado_250gr.png'
+import imgTomateLata  from '@/assets/market/tomates_lata_UN.webp'
 import imgTomate      from '@/assets/market/tomate-pera.jpg'
 import imgPlatano     from '@/assets/market/platano_.png'
 import imgManzana     from '@/assets/market/manzana.jpg'
@@ -117,7 +117,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'TOM-ARC-001',
     shortDescription: 'Tomates pelados enteros al natural, para salsas y guisos',
     category: catAbarrotes,
-    images: [],
+    images: pic(imgTomateLata, 'Tomates al natural lata 400 g'),
     price: 890,
     compareAtPrice: 1090,
     unit: 'un',
@@ -213,7 +213,7 @@ export const MOCK_PRODUCTS: Product[] = [
     sku: 'LAC-NES-001',
     shortDescription: 'Yogurt natural cremoso sin azúcar añadida',
     category: catLacteos,
-    images: pic(imgYogurt, 'Yogurt Nestlé natural pack 4'),
+    images: [],
     price: 1890,
     unit: 'paq',
     stock: 60,

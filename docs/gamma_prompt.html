@@ -1,0 +1,432 @@
+<title>Prompt para Gamma — AMERICO Minimarket</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ground:  #F6F3EE;
+    --surface: #FFFFFF;
+    --border:  #E2DDD4;
+    --text:    #1C1917;
+    --muted:   #78716C;
+    --amber:   #D97706;
+    --amber-bg:#FEF3C7;
+    --green:   #047857;
+    --green-bg:#ECFDF5;
+    --mono:    'SF Mono','Cascadia Code',ui-monospace,monospace;
+  }
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: system-ui,-apple-system,'Segoe UI',sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+    padding: 48px 20px 80px;
+  }
+  .page { max-width: 760px; margin: 0 auto; }
+
+  .doc-header { padding-bottom: 28px; border-bottom: 2px solid var(--border); margin-bottom: 36px; }
+  .doc-eyebrow {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--amber); margin-bottom: 10px;
+  }
+  .doc-title { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 8px; }
+  .doc-sub { font-size: 13px; color: var(--muted); max-width: 58ch; }
+
+  .section { margin-bottom: 36px; }
+  .section-label {
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── Callout instrucción ── */
+  .callout {
+    border-left: 3px solid var(--amber); background: var(--amber-bg);
+    border-radius: 0 6px 6px 0; padding: 12px 16px; margin-bottom: 16px;
+    font-size: 13px; color: var(--text); line-height: 1.55;
+  }
+  .callout strong { font-weight: 700; }
+
+  /* ── Prompt box ── */
+  .prompt-wrap { position: relative; }
+  .prompt-box {
+    width: 100%;
+    background: #1C1917;
+    color: #F0E8D8;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.7;
+    border: none;
+    border-radius: 8px;
+    padding: 20px 52px 20px 20px;
+    resize: none;
+    outline: none;
+    white-space: pre-wrap;
+    min-height: 520px;
+    cursor: text;
+  }
+  .copy-btn {
+    position: absolute; top: 12px; right: 12px;
+    background: #3D3228; color: #D6C9B3; border: none;
+    border-radius: 5px; padding: 6px 12px;
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: background 0.15s, color 0.15s;
+    letter-spacing: 0.04em;
+  }
+  .copy-btn:hover { background: var(--amber); color: #1C1917; }
+  .copy-btn.copied { background: var(--green); color: white; }
+
+  /* ── Slide preview ── */
+  .slides-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .slide-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px;
+  }
+  .slide-num {
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    color: var(--amber); margin-bottom: 4px; letter-spacing: 0.06em;
+  }
+  .slide-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .slide-desc { font-size: 11px; color: var(--muted); line-height: 1.45; }
+
+  /* ── Tips ── */
+  .tips-list { display: flex; flex-direction: column; gap: 6px; }
+  .tip {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 14px; font-size: 13px; color: var(--text);
+  }
+  .tip-tag {
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    background: var(--amber-bg); color: #92400E;
+    padding: 2px 6px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; margin-top: 1px;
+  }
+
+  .doc-footer {
+    margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .slides-grid { grid-template-columns: repeat(2,1fr); }
+  }
+</style>
+
+<div class="page">
+
+  <header class="doc-header">
+    <div class="doc-eyebrow">Modo Captación · Herramienta · Junio 2026</div>
+    <h1 class="doc-title">Prompt para presentación en Gamma</h1>
+    <p class="doc-sub">Prompt listo para pegar en Gamma.app (o Tome, Beautiful.ai) y generar la presentación ejecutiva que acompaña la propuesta comercial de AMERICO Minimarket.</p>
+  </header>
+
+  <!-- Instrucciones -->
+  <section class="section">
+    <div class="section-label">Cómo usar</div>
+    <div class="callout">
+      <strong>Paso 1:</strong> Copia el prompt completo con el botón de abajo.<br>
+      <strong>Paso 2:</strong> Entra a <strong>gamma.app</strong> → "New" → "Generate" → pega el texto.<br>
+      <strong>Paso 3:</strong> Selecciona idioma Español y tema claro (light). Genera.<br>
+      <strong>Paso 4:</strong> En la slide de Planes y Precios, reemplaza el placeholder de precio con la imagen de la propuesta comercial si Gamma la renderiza diferente.<br>
+      <strong>Nota:</strong> Si usas Tome o Beautiful.ai, el prompt funciona igual — son instrucciones en lenguaje natural.
+    </div>
+  </section>
+
+  <!-- Slides preview -->
+  <section class="section">
+    <div class="section-label">Estructura de la presentación (12 slides)</div>
+    <div class="slides-grid">
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 01</div>
+        <div class="slide-title">Portada</div>
+        <div class="slide-desc">Tagline + nombre + imagen de fondo de minimarket</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 02</div>
+        <div class="slide-title">El problema</div>
+        <div class="slide-desc">Ventas perdidas fuera de horario y de radio</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 03</div>
+        <div class="slide-title">La solución</div>
+        <div class="slide-desc">Plataforma lista en días, sin tecnología propia</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 04</div>
+        <div class="slide-title">Cómo funciona</div>
+        <div class="slide-desc">Flujo de 3 pasos: ordenar → preparar → entregar</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 05</div>
+        <div class="slide-title">Funcionalidades</div>
+        <div class="slide-desc">Catálogo, carrito, pagos, emails, tracking</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 06</div>
+        <div class="slide-title">Panel admin</div>
+        <div class="slide-desc">CRUD, pedidos, CSV, analytics, cambio de estado</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 07</div>
+        <div class="slide-title">Seguimiento</div>
+        <div class="slide-desc">El diferenciador: elimina consultas WhatsApp</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 08</div>
+        <div class="slide-title">ROI</div>
+        <div class="slide-desc">Mes 3 = +$646.000 neto. Recupera en mes 3</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 09</div>
+        <div class="slide-title">Planes y precios</div>
+        <div class="slide-desc">Básico / Profesional / Enterprise</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 10</div>
+        <div class="slide-title">Tecnología</div>
+        <div class="slide-desc">React, Node.js, MongoDB, Railway, Transbank</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 11</div>
+        <div class="slide-title">Por qué ahora</div>
+        <div class="slide-desc">E-commerce Chile: crecimiento post-pandemia</div>
+      </div>
+      <div class="slide-card">
+        <div class="slide-num">SLIDE 12</div>
+        <div class="slide-title">CTA</div>
+        <div class="slide-desc">Demo + contacto ksandoval@cerveros.cl</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prompt box -->
+  <section class="section">
+    <div class="section-label">Prompt completo — copiar y pegar</div>
+    <div class="prompt-wrap">
+      <textarea id="prompt-text" class="prompt-box" readonly>Genera una presentación ejecutiva de 12 slides en español, estilo profesional pero accesible, para vender una plataforma de e-commerce a dueños de minimarket en Chile. El tono debe ser directo, sin jerga técnica, orientado al dueño del local que no es experto en tecnología. Usa una paleta de colores cálida: ámbar (#D97706) como acento principal, blanco o crema como fondo, texto casi negro (#1C1917). Tipografía moderna y legible.
+
+---
+
+SLIDE 1 — PORTADA
+Título principal: "Tu tienda en línea, tu segundo negocio"
+Subtítulo: "AMERICO Minimarket Digital — Plataforma e-commerce para minimarkets chilenos"
+Incluye una imagen de fondo de un minimarket moderno o productos de almacén iluminados. Coloca el logo/nombre en la parte superior izquierda.
+
+---
+
+SLIDE 2 — EL PROBLEMA
+Título: "Cada día pierdes ventas sin saberlo"
+Contenido en 3 bloques visuales:
+• Bloque 1: "Fuera de horario" — Un cliente necesita algo a las 10 PM. Tu local está cerrado. Compra en otro lado.
+• Bloque 2: "Fuera de radio" — Alguien en otra cuadra no te conoce. No puede pedirte delivery.
+• Bloque 3: "Sin control de pedidos" — Recibes pedidos por WhatsApp. Errores, confusión, tiempo perdido.
+Dato de impacto (opcional): "El 67% del comercio minorista en Chile aún no tiene canal digital."
+
+---
+
+SLIDE 3 — LA SOLUCIÓN
+Título: "Una tienda en línea completa, lista en días"
+Subtítulo: "Sin servidores propios. Sin contratar tecnología. Sin capacitación compleja."
+Lista de características en iconos:
+• Catálogo digital de productos con fotos y precios
+• Carrito de compras y checkout en línea
+• Pagos con WebPay Plus (Transbank) y MercadoPago
+• Envío a domicilio o retiro en tienda
+• Emails automáticos de confirmación
+Imagen o mockup de la tienda en un teléfono móvil.
+
+---
+
+SLIDE 4 — CÓMO FUNCIONA
+Título: "Tres pasos, sin complicaciones"
+Diagrama de flujo horizontal con 3 pasos:
+Paso 1: "El cliente ordena" — Entra al sitio, agrega productos, elige entrega o retiro, paga en línea.
+Paso 2: "Tú preparas" — Ves el pedido en el panel admin, actualizas el estado, preparas el paquete.
+Paso 3: "El cliente recibe" — Llega a retirar o recibe delivery. Recibe email de confirmación en cada paso.
+Usa flechas entre los pasos. Fondo cálido, íconos simples.
+
+---
+
+SLIDE 5 — FUNCIONALIDADES CLAVE
+Título: "Todo lo que necesitas, nada que no necesitas"
+Diseño en cuadrícula de 6 bloques:
+• Catálogo con imágenes y categorías — Sube tus productos con foto y precio. El cliente puede buscar y filtrar.
+• Carrito inteligente — El carrito se mantiene activo aunque el cliente cierre el navegador.
+• Dos métodos de pago — WebPay Plus (Transbank) y MercadoPago. El cliente elige.
+• Seguimiento de pedidos — El cliente ve el estado de su pedido en tiempo real, sin preguntarte.
+• Correos automáticos — Confirmación, cambio de estado y aviso de entrega. Sin trabajo manual.
+• Retiro o delivery — El cliente elige en el checkout. Tú defines las comunas con envío.
+
+---
+
+SLIDE 6 — PANEL DE ADMINISTRACIÓN
+Título: "Tú controlas todo desde el panel admin"
+Descripción: "Accede desde cualquier dispositivo. Sin instalaciones."
+Lista en dos columnas:
+Columna izquierda:
+• Agregar, editar y eliminar productos con imagen
+• Ver todos los pedidos con filtros por estado y fecha
+• Cambiar el estado de un pedido con un clic (confirmar, preparando, listo, entregado)
+• Buscar pedidos por número o cliente
+Columna derecha:
+• Exportar pedidos en Excel/CSV para contabilidad
+• Panel de reportes: ingresos, productos más vendidos, comunas, categorías
+• Gestión de usuarios y clientes
+• Acceso con clave segura, protegido por rol de administrador
+Incluye un mockup de pantalla del panel admin si es posible.
+
+---
+
+SLIDE 7 — MÓDULO DE SEGUIMIENTO DE PEDIDOS
+Título: "El WhatsApp de los pedidos, eliminado"
+Subtítulo: "Tu diferenciador frente a la competencia"
+Contenido principal:
+Antes: "¿Cómo va mi pedido?" — 10 mensajes de WhatsApp por pedido. Interrupciones constantes. Errores por responder a prisa.
+Después: El cliente entra al sitio, escribe su número de pedido y ve el estado actual en tiempo real. Recibe un correo automático en cada cambio de estado.
+Timeline visual de 6 etapas: Pedido recibido → Pago confirmado → Preparando → Listo para retiro → En camino → Entregado
+Frase de cierre: "Menos WhatsApp. Más ventas. Más tiempo para lo que importa."
+
+---
+
+SLIDE 8 — RETORNO DE LA INVERSIÓN
+Título: "La plataforma se paga sola en el mes 3"
+Subtítulo: "Proyección conservadora para un minimarket con ticket promedio de $4.500"
+Tabla de 3 columnas (Mes 1 / Mes 2 / Mes 3):
+• Pedidos en línea: 30 / 60 / 90
+• Ticket promedio: $4.500 / $4.500 / $4.500
+• Ingreso bruto digital: $135.000 / $270.000 / $405.000
+• Margen operacional estimado (60%): $81.000 / $162.000 / $243.000
+• Costo mensual plataforma Plan Básico: $79.000 / $79.000 / $79.000
+• Ganancia neta digital: $2.000 / $83.000 / $164.000
+Frase destacada: "Con solo 90 pedidos al mes, generas $164.000 netos adicionales. El canal digital se convierte en tu segundo turno, sin empleados adicionales."
+Nota al pie: "Proyección conservadora. No incluye crecimiento de ticket promedio ni clientes recurrentes."
+
+---
+
+SLIDE 9 — PLANES Y PRECIOS
+Título: "Tres planes, un solo objetivo: hacer crecer tu negocio"
+Diseño en 3 tarjetas (una resaltada como recomendada):
+
+PLAN BÁSICO
+Precio implementación: $990.000 (pago único)
+Precio mensual: $79.000/mes
+Incluye: Catálogo hasta 100 productos, checkout completo, WebPay + MercadoPago, tracking de pedidos, emails automáticos, 1 administrador.
+
+PLAN PROFESIONAL (RECOMENDADO — resaltar con borde ámbar)
+Precio implementación: $1.590.000 (pago único)
+Precio mensual: $119.000/mes
+Todo el plan Básico más: Productos ilimitados, panel de reportes y analytics, exportación CSV, soporte prioritario, hasta 3 administradores.
+
+PLAN ENTERPRISE
+Precio implementación: $2.490.000 (pago único)
+Precio mensual: $189.000/mes
+Todo el plan Profesional más: Integración con sistema de inventario, personalización de marca avanzada, módulo de fidelización, soporte 24/7, administradores ilimitados.
+
+Nota al pie: "Todos los precios en pesos chilenos. IVA no incluido."
+
+---
+
+SLIDE 10 — TECNOLOGÍA QUE FUNCIONA
+Título: "Construido con tecnología de primer nivel"
+Subtítulo: "La misma que usan las grandes tiendas. Adaptada para tu escala."
+Cuadrícula de iconos y descripciones:
+• React 19 — La interfaz que ven tus clientes. Rápida y fluida en móvil.
+• Node.js + MongoDB — El motor detrás de la tienda. Escalable y seguro.
+• Railway — Servidor en la nube. 99.9% de disponibilidad. Sin servidores físicos que mantener.
+• Cloudinary — Imágenes de productos optimizadas automáticamente para carga rápida.
+• Transbank WebPay Plus — El estándar bancario chileno para pagos seguros en línea.
+• Resend — Correos transaccionales de alta entrega. Tus clientes siempre reciben la confirmación.
+Frase de cierre: "Tú te enfocas en vender. La tecnología trabaja sola."
+
+---
+
+SLIDE 11 — POR QUÉ AHORA
+Título: "El comercio digital en Chile ya no es opcional"
+Contenido en dos partes:
+Estadísticas de contexto (usa datos reales de Chile si tienes, o genera visualización conceptual):
+• El comercio electrónico en Chile creció un 150% entre 2019 y 2023 (post-pandemia).
+• El 78% de las personas en comunas como La Pintana tiene smartphone con acceso a internet móvil.
+• El 40% de las compras de almacén se inician en el teléfono — pero se terminan en otro local que tiene canal digital.
+Mensaje principal:
+"Los minimarkets que no digitalizan su canal de venta en los próximos 2 años van a perder clientes permanentemente a quienes sí lo hagan. No es una tendencia. Es lo que ya está pasando."
+Imagen: mapa o ilustración de La Pintana / Santiago con puntos de cobertura de delivery.
+
+---
+
+SLIDE 12 — LLAMADA A LA ACCIÓN
+Título: "¿Listo para abrir tu segunda tienda?"
+Subtítulo: "La que trabaja 24/7, sin empleados adicionales."
+Tres pasos para comenzar:
+1. Agenda una demo de 30 minutos — te mostramos la plataforma funcionando en vivo.
+2. Elegimos el plan que más te conviene — sin compromiso, con contrato claro.
+3. En menos de 2 semanas tienes tu tienda en línea — lista para recibir pedidos.
+Contacto destacado:
+Nombre: Kristopher Sandoval
+Email: ksandoval@cerveros.cl
+Frase final: "Una demo es gratis. No tener canal digital, no lo es."</textarea>
+      <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">Copiar</button>
+    </div>
+  </section>
+
+  <!-- Tips de uso -->
+  <section class="section">
+    <div class="section-label">Tips para Gamma</div>
+    <div class="tips-list">
+      <div class="tip">
+        <div class="tip-tag">TEMA</div>
+        <div>Elige el tema <strong>"Professional"</strong> o <strong>"Clean"</strong> en Gamma. Luego cambia el acento a ámbar (#D97706) en la configuración de colores. Evita el tema oscuro — el público objetivo responde mejor a fondos claros.</div>
+      </div>
+      <div class="tip">
+        <div class="tip-tag">FUENTE</div>
+        <div>Si Gamma te permite elegir fuente, usa <strong>Plus Jakarta Sans</strong> o <strong>Inter</strong>. Son modernas y legibles en proyector. Evita serif — se ve menos tech.</div>
+      </div>
+      <div class="tip">
+        <div class="tip-tag">SLIDE 8</div>
+        <div>La tabla de ROI es la slide más importante de la presentación. Si Gamma la genera como lista en lugar de tabla, edítala manualmente. El formato visual de tabla comparativa tiene más impacto que las viñetas.</div>
+      </div>
+      <div class="tip">
+        <div class="tip-tag">SLIDE 9</div>
+        <div>Resalta el Plan Profesional con el borde ámbar. En Gamma puedes hacer esto con el editor de tarjetas — selecciona la tarjeta del medio y aplica el color de acento como borde o fondo.</div>
+      </div>
+      <div class="tip">
+        <div class="tip-tag">IMÁGENES</div>
+        <div>Gamma genera imágenes con IA. Para la portada (Slide 1), si la imagen generada no convence, usa la frase: <em>"Una foto de estantería de minimarket chileno, productos ordenados, iluminación cálida, estilo fotográfico"</em> como prompt de imagen alternativo.</div>
+      </div>
+      <div class="tip">
+        <div class="tip-tag">EXPORT</div>
+        <div>Exporta en PDF (no PowerPoint) para enviar por WhatsApp o email. El PDF mantiene las fuentes y los colores exactos. PowerPoint puede distorsionar el diseño en equipos sin las fuentes instaladas.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="doc-footer">
+    <span>AMERICO Minimarket — Prompt para presentación ejecutiva · Junio 2026</span>
+    <span style="font-family:var(--mono)">12 slides · Gamma.app / Tome / Beautiful.ai</span>
+  </footer>
+</div>
+
+<script>
+function copyPrompt() {
+  const ta = document.getElementById('prompt-text');
+  const btn = document.getElementById('copy-btn');
+  navigator.clipboard.writeText(ta.value).then(() => {
+    btn.textContent = '¡Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copiar';
+      btn.classList.remove('copied');
+    }, 2500);
+  }).catch(() => {
+    ta.select();
+    document.execCommand('copy');
+    btn.textContent = '¡Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copiar';
+      btn.classList.remove('copied');
+    }, 2500);
+  });
+}
+</script>

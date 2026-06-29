@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AMERICO — Auditoría de Diseño Frontend</title>
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0c09;
+    --surface: #171512;
+    --surface-2: #201e19;
+    --border: #2c2820;
+    --amber: #d97706;
+    --amber-bright: #f59e0b;
+    --amber-dim: rgba(217,119,6,0.12);
+    --amber-glow: rgba(245,158,11,0.08);
+    --cream: #ede8dc;
+    --cream-dim: #a09080;
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.12);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.12);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,0.1);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header { border-bottom: 1px solid var(--border); padding: 48px 64px 40px; position: relative; overflow: hidden; }
+  .header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(217,119,6,0.06) 0%, transparent 70%); pointer-events: none; }
+  .header-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; font-weight: 600; }
+  .header-title { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 400; line-height: 1.15; color: var(--cream); margin-bottom: 12px; letter-spacing: -0.02em; }
+  .header-title em { font-style: italic; color: var(--amber-bright); }
+  .header-meta { font-size: 13px; color: var(--cream-dim); display: flex; gap: 24px; flex-wrap: wrap; }
+  .header-meta span { display: flex; align-items: center; gap: 6px; }
+  .header-meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--amber); }
+
+  .verdict { margin: 0; padding: 20px 64px; background: var(--amber-dim); border-bottom: 1px solid rgba(217,119,6,0.25); display: flex; align-items: center; gap: 16px; }
+  .verdict-badge { background: var(--amber); color: #0d0c09; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; white-space: nowrap; flex-shrink: 0; }
+  .verdict-text { font-size: 14px; color: var(--cream); font-weight: 500; }
+
+  section { padding: 56px 64px; border-bottom: 1px solid var(--border); }
+
+  .section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); margin-bottom: 10px; }
+  h2 { font-family: Georgia, serif; font-size: 1.75rem; font-weight: 400; color: var(--cream); margin-bottom: 32px; letter-spacing: -0.02em; }
+  h3 { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 16px; margin-top: 32px; }
+  h3:first-child { margin-top: 0; }
+  p { margin-bottom: 12px; color: var(--cream); opacity: 0.85; }
+
+  .token-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 40px; }
+  .token-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .token-swatch { height: 64px; width: 100%; }
+  .token-info { padding: 12px; }
+  .token-name { font-size: 12px; font-weight: 600; color: var(--cream); margin-bottom: 2px; }
+  .token-value { font-size: 11px; color: var(--cream-dim); font-family: 'Courier New', monospace; }
+  .token-role { font-size: 10px; color: var(--amber); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px; }
+
+  .type-specimen { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 28px 32px; margin-bottom: 12px; }
+  .specimen-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 12px; font-weight: 600; }
+  .specimen-display { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; font-size: 2rem; font-weight: 700; color: var(--cream); line-height: 1.2; letter-spacing: -0.02em; }
+  .specimen-body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; font-size: 15px; line-height: 1.65; color: var(--cream); opacity: 0.85; margin-top: 12px; }
+  .specimen-caption { font-size: 11px; color: var(--cream-dim); margin-top: 16px; font-style: italic; }
+
+  .eval-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .eval-grid { grid-template-columns: 1fr; } }
+  .eval-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
+  .eval-card.positive { border-color: rgba(74,222,128,0.2); background: var(--green-dim); }
+  .eval-card.negative { border-color: rgba(248,113,113,0.2); background: var(--red-dim); }
+  .eval-card.neutral { border-color: rgba(251,191,36,0.2); background: var(--yellow-dim); }
+  .eval-icon { font-size: 20px; margin-bottom: 10px; display: block; }
+  .eval-title { font-size: 14px; font-weight: 700; color: var(--cream); margin-bottom: 8px; }
+  .eval-body { font-size: 13px; color: var(--cream); opacity: 0.75; line-height: 1.55; }
+  .eval-verdict { display: inline-block; margin-top: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; }
+  .positive .eval-verdict { background: rgba(74,222,128,0.2); color: var(--green); }
+  .negative .eval-verdict { background: rgba(248,113,113,0.2); color: var(--red); }
+  .neutral .eval-verdict { background: var(--yellow-dim); color: var(--yellow); }
+
+  .rec-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+  .rec-item { display: grid; grid-template-columns: 32px 1fr auto; gap: 16px; align-items: start; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .rec-num { width: 32px; height: 32px; border-radius: 50%; background: var(--amber-dim); border: 1px solid rgba(217,119,6,0.3); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+  .rec-content { min-width: 0; }
+  .rec-title { font-size: 14px; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
+  .rec-desc { font-size: 13px; color: var(--cream); opacity: 0.7; line-height: 1.5; }
+  .rec-impact { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; padding: 4px 10px; border-radius: 3px; flex-shrink: 0; }
+  .impact-high { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .impact-med { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(251,191,36,0.25); }
+  .impact-low { background: var(--green-dim); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+
+  .anim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .anim-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; }
+  .anim-demo { height: 48px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .anim-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--amber); animation: pulse 2s ease-in-out infinite; }
+  .anim-check { width: 32px; height: 32px; border-radius: 50%; background: var(--green-dim); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; color: var(--green); font-size: 16px; animation: spring 1.5s ease-in-out infinite; }
+  .anim-slide { width: 48px; height: 8px; background: var(--amber-dim); border-radius: 4px; position: relative; overflow: hidden; }
+  .anim-slide::after { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 40%; background: var(--amber); border-radius: 4px; animation: slide 2s ease-in-out infinite alternate; }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } }
+  @keyframes spring { 0%,100% { transform: scale(1); } 40% { transform: scale(1.2); } 60% { transform: scale(0.95); } }
+  @keyframes slide { from { transform: translateX(0); } to { transform: translateX(60px); } }
+  .anim-name { font-size: 12px; font-weight: 600; color: var(--cream); margin-bottom: 4px; }
+  .anim-detail { font-size: 11px; color: var(--cream-dim); }
+
+  footer { padding: 32px 64px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .footer-brand { font-family: Georgia, serif; font-size: 14px; color: var(--amber); font-style: italic; }
+  .footer-score { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--cream-dim); }
+  .score-num { font-size: 24px; font-weight: 700; font-family: Georgia, serif; color: var(--amber-bright); line-height: 1; }
+  .score-max { font-size: 14px; color: var(--cream-dim); }
+
+  @media (max-width: 600px) { .header, section, footer, .verdict { padding-left: 24px; padding-right: 24px; } }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Auditoría de Diseño Frontend · Sprint 1–6</div>
+  <h1 class="header-title">AMERICO Minimarket<br><em>Design Review</em></h1>
+  <div class="header-meta">
+    <span><span class="dot"></span> E-commerce · La Pintana, Santiago</span>
+    <span><span class="dot"></span> React 19 + Tailwind + Framer Motion</span>
+    <span><span class="dot"></span> 2026-06-25</span>
+  </div>
+</div>
+
+<div class="verdict">
+  <span class="verdict-badge">Veredicto MVP</span>
+  <span class="verdict-text">Diseño sólido y coherente. Amber/Stone es una elección acertada. 4 mejoras de bajo esfuerzo elevarían significativamente la conversión.</span>
+</div>
+
+<section>
+  <div class="section-label">01 · Sistema de Diseño</div>
+  <h2>Tokens actuales</h2>
+
+  <h3>Paleta de colores</h3>
+  <div class="token-grid">
+    <div class="token-card"><div class="token-swatch" style="background:#d97706;"></div><div class="token-info"><div class="token-name">Primary</div><div class="token-value">#d97706 · Amber-600</div><div class="token-role">CTA · Acentos · Foco</div></div></div>
+    <div class="token-card"><div class="token-swatch" style="background:#f5f0e8;"></div><div class="token-info"><div class="token-name">Secondary</div><div class="token-value">Stone-100 oklch</div><div class="token-role">Fondos · Neutro cálido</div></div></div>
+    <div class="token-card"><div class="token-swatch" style="background:#ffffff; border-top: 1px solid #eee;"></div><div class="token-info"><div class="token-name">Background</div><div class="token-value">#ffffff · Blanco puro</div><div class="token-role">Superficie principal</div></div></div>
+    <div class="token-card"><div class="token-swatch" style="background:#dc2626;"></div><div class="token-info"><div class="token-name">Destructive</div><div class="token-value">Red-600 oklch</div><div class="token-role">Errores · Acciones críticas</div></div></div>
+    <div class="token-card"><div class="token-swatch" style="background:#1c1917;"></div><div class="token-info"><div class="token-name">Foreground</div><div class="token-value">Stone-950 oklch</div><div class="token-role">Texto principal</div></div></div>
+    <div class="token-card"><div class="token-swatch" style="background:#78716c;"></div><div class="token-info"><div class="token-name">Muted FG</div><div class="token-value">Stone-500 oklch</div><div class="token-role">Texto secundario · Labels</div></div></div>
+  </div>
+
+  <h3>Tipografía</h3>
+  <div class="type-specimen">
+    <div class="specimen-label">Display · Plus Jakarta Sans · 700</div>
+    <div class="specimen-display">Todo lo que necesitas,<br>a tu puerta</div>
+    <div class="specimen-body">Abarrotes, bebidas, lácteos y más. Despacho a domicilio en toda la Región Metropolitana o retira en nuestra tienda.</div>
+    <div class="specimen-caption">Plus Jakarta Sans — humanista, moderna, alta legibilidad en pantalla. Border-radius: sm 0.25rem, lg 0.5rem</div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label">02 · Evaluación</div>
+  <h2>Qué funciona bien y qué no</h2>
+  <div class="eval-grid">
+    <div class="eval-card positive">
+      <span class="eval-icon">🎨</span>
+      <div class="eval-title">Paleta amber/stone</div>
+      <div class="eval-body">El amber-600 como primary es una elección distintiva para un minimarket. Evoca calidez, alimentos, cercanía. Contrasta bien con el blanco. Stone como neutro tiene sesgo cálido que complementa el amber en lugar de competir con él.</div>
+      <span class="eval-verdict">Acertado</span>
+    </div>
+    <div class="eval-card positive">
+      <span class="eval-icon">✍️</span>
+      <div class="eval-title">Plus Jakarta Sans</div>
+      <div class="eval-body">Sans-serif humanista con carácter propio. Legible en tamaños pequeños, expresiva en display grande. Mejor que Inter o Roboto para e-commerce de consumo masivo — no se siente corporativo.</div>
+      <span class="eval-verdict">Acertado</span>
+    </div>
+    <div class="eval-card positive">
+      <span class="eval-icon">✨</span>
+      <div class="eval-title">Animaciones calibradas</div>
+      <div class="eval-body">Framer Motion bien usado: transiciones de pasos en checkout (x:20→0, 200ms), spring en confirmación de pedido (damping 15 stiffness 200), scale en timeline de tracking. No sobrecargan. Hay intención.</div>
+      <span class="eval-verdict">Acertado</span>
+    </div>
+    <div class="eval-card positive">
+      <span class="eval-icon">📍</span>
+      <div class="eval-title">Localización</div>
+      <div class="eval-body">Hero menciona "Región Metropolitana". Footer tiene dirección real en La Pintana. Horarios "Lun–Sáb 08:00–21:00". Estos detalles crean confianza local — más eficaces que cualquier otro elemento de diseño.</div>
+      <span class="eval-verdict">Acertado</span>
+    </div>
+    <div class="eval-card negative">
+      <span class="eval-icon">🖼️</span>
+      <div class="eval-title">Hero sin imagen real</div>
+      <div class="eval-body">El hero tiene excelente copy pero carece de imagen fotográfica. Una foto del local, del equipo, o de productos reales haría mucho más por la conversión que cualquier ajuste tipográfico. Las fotos auténticas superan a los ilustrativos en e-commerce local.</div>
+      <span class="eval-verdict">Mejorar</span>
+    </div>
+    <div class="eval-card negative">
+      <span class="eval-icon">🔖</span>
+      <div class="eval-title">Sin favicon ni OG image</div>
+      <div class="eval-body">Sin favicon, el tab del navegador muestra el ícono por defecto del browser. Sin og:image, al compartir el link por WhatsApp no aparece preview visual — el canal principal de difusión en Chile. Ambos son correcciones de 30 minutos con alto impacto. <strong>Estado: resueltos en post-Sprint 9.</strong></div>
+      <span class="eval-verdict">Resuelto ✓</span>
+    </div>
+    <div class="eval-card neutral">
+      <span class="eval-icon">🏷️</span>
+      <div class="eval-title">Isotipo de marca</div>
+      <div class="eval-body">El header muestra solo el texto "AMERICO". Un isotipo sencillo junto al nombre daría más reconocimiento de marca — especialmente útil como favicon y OG image. No es bloqueante para el MVP pero añade credibilidad visual.</div>
+      <span class="eval-verdict">Considerar</span>
+    </div>
+    <div class="eval-card neutral">
+      <span class="eval-icon">📄</span>
+      <div class="eval-title">Links de footer sin implementar</div>
+      <div class="eval-body">Política de envíos, Términos y Privacidad generan 404. Generan desconfianza en compradores que buscan validar la tienda. El cliente debe redactar el contenido — la estructura técnica ya está.</div>
+      <span class="eval-verdict">Pendiente del cliente</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label">03 · Motion Design</div>
+  <h2>Animaciones implementadas</h2>
+  <div class="anim-grid">
+    <div class="anim-card"><div class="anim-demo"><div class="anim-slide"></div></div><div class="anim-name">Checkout stepper</div><div class="anim-detail">x: 20→0 · opacity: 0→1 · 200ms</div></div>
+    <div class="anim-card"><div class="anim-demo"><div class="anim-check">✓</div></div><div class="anim-name">Confirmación pedido</div><div class="anim-detail">Spring · damping 15 · stiffness 200</div></div>
+    <div class="anim-card"><div class="anim-demo"><div class="anim-dot"></div></div><div class="anim-name">Order tracking</div><div class="anim-detail">scale: 1→1.15 · paso activo</div></div>
+    <div class="anim-card"><div class="anim-demo"><div style="width:48px;height:32px;background:var(--amber-dim);border:1px solid var(--border);border-radius:4px;animation:spring 2s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--amber);">¡Pago!</div></div><div class="anim-name">Payment result</div><div class="anim-detail">scale: 0.95→1 · opacity · 300ms</div></div>
+    <div class="anim-card"><div class="anim-demo"><div style="width:48px;height:24px;background:var(--amber-dim);border-radius:4px;overflow:hidden;position:relative;"><div style="position:absolute;inset:0;background:var(--amber-dim);animation:slide 2s ease-in-out infinite alternate;"></div></div></div><div class="anim-name">Delivery selector</div><div class="anim-detail">height: 0→auto · AnimatePresence</div></div>
+  </div>
+  <p style="margin-top:24px; font-size:13px; opacity:0.7;">Las animaciones están bien calibradas. Ninguna excede 300ms. La ausencia de animaciones innecesarias es tan valiosa como las que sí están.</p>
+</section>
+
+<section>
+  <div class="section-label">04 · Recomendaciones</div>
+  <h2>Prioridades de mejora visual</h2>
+  <ul class="rec-list">
+    <li class="rec-item">
+      <div class="rec-num">1</div>
+      <div class="rec-content"><div class="rec-title">Foto real del local o productos en el hero</div><div class="rec-desc">Una imagen auténtica del minimarket, del equipo, o de productos reales tiene mayor impacto en conversión que cualquier otro cambio de diseño. El copy ya está bien — lo que falta es la prueba visual de que esto es un negocio real en La Pintana.</div></div>
+      <span class="rec-impact impact-high">Impacto alto</span>
+    </li>
+    <li class="rec-item">
+      <div class="rec-num">2</div>
+      <div class="rec-content"><div class="rec-title">Favicon + OG image para WhatsApp</div><div class="rec-desc">Favicon de 32×32px con isotipo o logo de AMERICO. OG image de 1200×630px para las páginas principales. Impacto directo en cómo se ve el link al compartir por WhatsApp — el canal de difusión más relevante para un minimarket local. Resuelto en post-Sprint 9.</div></div>
+      <span class="rec-impact impact-high">Resuelto ✓</span>
+    </li>
+    <li class="rec-item">
+      <div class="rec-num">3</div>
+      <div class="rec-content"><div class="rec-title">Corregir placeholder de dirección en checkout</div><div class="rec-desc">"Av. Ejemplo 1234" en el selector de retiro debe reemplazarse con la dirección real. Cambio de 5 minutos que afecta la confianza del usuario en el momento de mayor intención de compra. Ya corregido en DeliverySelector.tsx.</div></div>
+      <span class="rec-impact impact-high">Resuelto ✓</span>
+    </li>
+    <li class="rec-item">
+      <div class="rec-num">4</div>
+      <div class="rec-content"><div class="rec-title">Isotipo junto al nombre en header y footer</div><div class="rec-desc">Un ícono simple (puede ser solo la "A" con tratamiento especial, o un motivo gráfico de minimarket) junto al texto "AMERICO" daría más identidad de marca. Diferible al post-MVP pero añade credibilidad visual significativa.</div></div>
+      <span class="rec-impact impact-med">Diferir v1.1</span>
+    </li>
+    <li class="rec-item">
+      <div class="rec-num">5</div>
+      <div class="rec-content"><div class="rec-title">Blur-up placeholder para imágenes de productos</div><div class="rec-desc">Cuando un producto no tiene imagen subida a Cloudinary, mostrar un placeholder con color sólido (amber-50) y el nombre del producto en lugar de un espacio vacío. Mejora la percepción visual del catálogo mientras el cliente sube imágenes reales.</div></div>
+      <span class="rec-impact impact-low">Mejora menor</span>
+    </li>
+  </ul>
+</section>
+
+<footer>
+  <div class="footer-brand">AMERICO Minimarket · Design Review 2026</div>
+  <div class="footer-score">
+    <span>Calidad de diseño MVP</span>
+    <span><span class="score-num">7.5</span><span class="score-max"> / 10</span></span>
+  </div>
+</footer>
+
+</body>
+</html>

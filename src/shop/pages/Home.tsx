@@ -17,7 +17,7 @@ export default function Home() {
       </Helmet>
 
       {/* Hero */}
-      <section className="relative bg-stone-50 py-16 sm:py-24">
+      <section className="relative bg-stone-50 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="max-w-2xl">
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">
@@ -82,7 +82,7 @@ export default function Home() {
       </section>
 
       {/* Productos destacados */}
-      <section className="py-8 pb-16">
+      <section className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-xl font-bold tracking-tight">Productos destacados</h2>

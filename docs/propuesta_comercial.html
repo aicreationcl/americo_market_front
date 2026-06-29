@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Propuesta Comercial — Tienda Digital para Minimarkets</title>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#0B1629;
+  --ink-card:#132040;
+  --ink-border:#1E3058;
+  --gold:#C8922A;
+  --gold-dim:rgba(200,146,42,0.10);
+  --gold-border:rgba(200,146,42,0.30);
+  --paper:#EDE8DC;
+  --paper-muted:#7A8BAA;
+  --paper-dim:rgba(237,232,220,0.05);
+  --green:#52A97A;
+  --red:#C0493E;
+  --ff-display:Georgia,'Times New Roman',serif;
+  --ff-body:system-ui,-apple-system,'Segoe UI',sans-serif;
+  --ff-mono:'Courier New',Courier,monospace;
+  --max-w:860px;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--ff-body);
+  font-size:1rem;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+.site-header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(11,22,41,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--ink-border);
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.header-brand{
+  font-family:var(--ff-display);
+  font-size:1.05rem;letter-spacing:.04em;
+  color:var(--paper);text-decoration:none;
+  display:flex;align-items:center;gap:10px;
+}
+.header-brand-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--gold);
+  display:inline-block;
+}
+.header-cta{
+  background:var(--gold);color:#0B1629;
+  border:none;border-radius:4px;
+  padding:8px 20px;
+  font-family:var(--ff-body);font-size:.85rem;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;
+  cursor:pointer;text-decoration:none;
+  transition:opacity .15s;
+}
+.header-cta:hover{opacity:.85}
+
+.hero{
+  min-height:92vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  padding:80px 24px 60px;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -5%, rgba(200,146,42,0.10) 0%, transparent 65%),
+    var(--ink);
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--ink-border),transparent);
+}
+.hero-eyebrow{
+  font-family:var(--ff-body);
+  font-size:.75rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:28px;
+}
+.hero-headline{
+  font-family:var(--ff-display);
+  font-size:clamp(2rem,5vw,3.6rem);
+  font-weight:400;
+  line-height:1.15;
+  color:var(--paper);
+  max-width:720px;
+  text-wrap:balance;
+  margin-bottom:20px;
+}
+.hero-headline em{font-style:normal;color:var(--gold);}
+.hero-subhead{
+  font-size:1.05rem;
+  color:var(--paper-muted);
+  max-width:540px;
+  margin-bottom:40px;
+  line-height:1.7;
+}
+.hero-actions{
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:center;
+  margin-bottom:56px;
+}
+.btn-primary{
+  background:var(--gold);color:#0B1629;
+  padding:14px 32px;border-radius:4px;
+  font-weight:700;font-size:.9rem;
+  letter-spacing:.04em;text-transform:uppercase;
+  text-decoration:none;transition:opacity .15s;
+  border:none;cursor:pointer;
+}
+.btn-primary:hover{opacity:.85}
+.btn-outline{
+  background:transparent;color:var(--paper);
+  padding:14px 32px;border-radius:4px;
+  font-weight:600;font-size:.9rem;
+  letter-spacing:.04em;text-transform:uppercase;
+  text-decoration:none;transition:border-color .15s,color .15s;
+  border:1px solid var(--ink-border);cursor:pointer;
+}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.hero-stats{
+  display:flex;flex-wrap:wrap;gap:0;
+  border:1px solid var(--ink-border);
+  border-radius:6px;overflow:hidden;
+}
+.hero-stat{
+  padding:14px 28px;
+  border-right:1px solid var(--ink-border);
+  font-size:.82rem;color:var(--paper-muted);
+  letter-spacing:.03em;
+}
+.hero-stat:last-child{border-right:none}
+.hero-stat strong{display:block;color:var(--paper);font-size:1rem;font-weight:700;margin-bottom:2px}
+
+.section{padding:80px 24px}
+.section-inner{max-width:var(--max-w);margin:0 auto}
+.section-label{
+  font-size:.72rem;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px;
+}
+.section-title{
+  font-family:var(--ff-display);
+  font-size:clamp(1.5rem,3vw,2.1rem);
+  font-weight:400;line-height:1.25;
+  color:var(--paper);margin-bottom:12px;
+  text-wrap:balance;
+}
+.section-sub{
+  font-size:1rem;color:var(--paper-muted);
+  max-width:580px;line-height:1.7;
+  margin-bottom:48px;
+}
+
+.section-alt{background:var(--ink-card)}
+.problem-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:2px;
+  border:1px solid var(--ink-border);
+  border-radius:6px;overflow:hidden;
+}
+.problem-card{padding:28px 24px;background:var(--paper-dim);}
+.problem-icon{font-size:1.4rem;margin-bottom:12px;display:block;}
+.problem-title{font-size:.9rem;font-weight:700;color:var(--paper);margin-bottom:8px;letter-spacing:.02em;}
+.problem-desc{font-size:.875rem;color:var(--paper-muted);line-height:1.6}
+.problem-figure{
+  display:inline-block;margin-top:12px;
+  font-family:var(--ff-mono);font-size:.82rem;
+  color:var(--red);background:rgba(192,73,62,0.12);
+  padding:2px 8px;border-radius:2px;
+}
+
+.section-ledger{
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(200,146,42,0.06) 0%, transparent 70%),
+    var(--ink);
+  border-top:1px solid var(--ink-border);
+  border-bottom:1px solid var(--ink-border);
+}
+.ledger-wrap{
+  background:var(--ink-card);
+  border:1px solid var(--gold-border);
+  border-radius:6px;overflow:hidden;
+}
+.ledger-header{
+  background:var(--gold-dim);
+  border-bottom:1px solid var(--gold-border);
+  padding:14px 24px;
+  font-family:var(--ff-mono);font-size:.8rem;
+  color:var(--gold);letter-spacing:.06em;text-transform:uppercase;
+}
+.ledger-body{padding:0}
+.ledger-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:11px 24px;
+  border-bottom:1px solid var(--ink-border);
+  font-family:var(--ff-mono);font-size:.88rem;
+  font-variant-numeric:tabular-nums;
+}
+.ledger-row:last-child{border-bottom:none}
+.ledger-row.indent .ledger-label{padding-left:16px;color:var(--paper-muted)}
+.ledger-row.subtotal{background:var(--paper-dim)}
+.ledger-row.subtotal .ledger-label,
+.ledger-row.subtotal .ledger-value{font-weight:700;color:var(--paper)}
+.ledger-row.total{background:rgba(82,169,122,0.08);border-top:2px solid var(--green);}
+.ledger-row.total .ledger-label,
+.ledger-row.total .ledger-value{font-size:1rem;font-weight:700;color:var(--green);}
+.ledger-row.total-year .ledger-value{font-size:1.5rem;color:var(--green);}
+.ledger-row.total-year .ledger-label{font-size:.85rem;color:var(--paper-muted)}
+.ledger-row.spacer{
+  padding:4px 24px;
+  background:var(--gold-dim);
+  border-bottom:1px solid var(--gold-border);
+  border-top:1px solid var(--gold-border);
+}
+.ledger-row.spacer .ledger-label{
+  font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);font-weight:700;
+}
+.ledger-value{text-align:right}
+.ledger-value.neg{color:var(--red)}
+.ledger-value.pos{color:var(--green)}
+.ledger-note{margin-top:16px;font-size:.8rem;color:var(--paper-muted);text-align:center;font-style:italic;}
+
+.roi-message{
+  margin-top:32px;
+  background:var(--gold-dim);
+  border:1px solid var(--gold-border);
+  border-radius:6px;
+  padding:24px 28px;
+  display:flex;gap:16px;align-items:flex-start;
+}
+.roi-message-icon{font-size:1.6rem;flex-shrink:0;line-height:1}
+.roi-message-text{font-size:.9rem;color:var(--paper);line-height:1.65}
+.roi-message-text strong{color:var(--gold)}
+
+.outcomes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+.outcome-card{
+  background:var(--ink-card);
+  border:1px solid var(--ink-border);
+  border-radius:6px;
+  padding:24px;
+  transition:border-color .2s;
+}
+.outcome-card:hover{border-color:var(--gold-border)}
+.outcome-tag{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:block;}
+.outcome-title{font-size:.95rem;font-weight:700;color:var(--paper);margin-bottom:8px;line-height:1.35;}
+.outcome-desc{font-size:.85rem;color:var(--paper-muted);line-height:1.6}
+
+.tracking-feature{background:var(--ink-card);border:1px solid var(--gold-border);border-radius:6px;overflow:hidden;}
+.tracking-header{background:var(--gold-dim);border-bottom:1px solid var(--gold-border);padding:20px 28px;display:flex;align-items:center;gap:14px;}
+.tracking-header-icon{font-size:1.8rem;line-height:1;flex-shrink:0;}
+.tracking-header-tag{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.tracking-header-title{font-family:var(--ff-display);font-size:1.15rem;font-weight:400;color:var(--paper);}
+.tracking-body{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;}
+.tracking-role{padding:24px 22px;border-right:1px solid var(--ink-border);}
+.tracking-role:last-child{border-right:none}
+.tracking-role-name{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.tracking-role-desc{font-size:.85rem;color:var(--paper-muted);line-height:1.6}
+.tracking-highlight{font-size:.8rem;color:var(--paper);font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid var(--ink-border);}
+.tracking-footer{border-top:1px solid var(--ink-border);padding:14px 24px;font-size:.8rem;color:var(--paper-muted);background:var(--paper-dim);text-align:center;}
+.tracking-footer strong{color:var(--green)}
+
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px;border:1px solid var(--ink-border);border-radius:6px;overflow:hidden;}
+.pricing-card{background:var(--ink-card);padding:32px 24px;display:flex;flex-direction:column;border-right:1px solid var(--ink-border);}
+.pricing-card:last-child{border-right:none}
+.pricing-card.featured{background:var(--gold-dim);border:1px solid var(--gold-border);margin:-1px;position:relative;z-index:1;}
+.pricing-badge{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#0B1629;background:var(--gold);padding:3px 10px;border-radius:2px;display:inline-block;margin-bottom:16px;align-self:flex-start;}
+.pricing-name{font-family:var(--ff-display);font-size:1.2rem;font-weight:400;color:var(--paper);margin-bottom:6px;}
+.pricing-desc{font-size:.82rem;color:var(--paper-muted);margin-bottom:24px;line-height:1.5}
+.pricing-amount{font-family:var(--ff-mono);font-variant-numeric:tabular-nums;font-size:1.8rem;font-weight:700;color:var(--paper);margin-bottom:4px;}
+.pricing-amount span{font-size:.9rem;font-weight:400;color:var(--paper-muted)}
+.pricing-monthly{font-size:.82rem;color:var(--paper-muted);margin-bottom:24px;}
+.pricing-monthly strong{color:var(--paper);font-family:var(--ff-mono)}
+.pricing-divider{border:none;border-top:1px solid var(--ink-border);margin:0 0 20px;}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:10px;flex:1;margin-bottom:28px;}
+.pricing-features li{font-size:.85rem;color:var(--paper-muted);display:flex;align-items:flex-start;gap:10px;line-height:1.45;}
+.pricing-features li::before{content:'';width:14px;height:14px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:3px;}
+.pricing-features li.dim{color:#4A5570}
+.pricing-features li.dim::before{background:var(--ink-border)}
+.pricing-features li.gold{color:var(--gold)}
+.pricing-features li.gold::before{background:var(--gold)}
+.pricing-cta{display:block;text-align:center;background:var(--gold);color:#0B1629;padding:12px;border-radius:4px;font-weight:700;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;margin-top:auto;transition:opacity .15s;}
+.pricing-cta:hover{opacity:.85}
+.pricing-cta.outline{background:transparent;color:var(--paper);border:1px solid var(--ink-border);}
+.pricing-cta.outline:hover{border-color:var(--gold);color:var(--gold)}
+
+.case-wrap{background:var(--ink-card);border:1px solid var(--ink-border);border-radius:6px;overflow:hidden;}
+.case-header{background:var(--gold);padding:20px 28px;}
+.case-header-label{font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(11,22,41,0.65);margin-bottom:4px;}
+.case-header-title{font-family:var(--ff-display);font-size:1.3rem;font-weight:400;color:#0B1629;}
+.case-body{padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media(max-width:560px){.case-body{grid-template-columns:1fr}}
+.case-metric{border-left:2px solid var(--gold);padding-left:16px}
+.case-metric-value{font-family:var(--ff-mono);font-size:1.6rem;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;}
+.case-metric-label{font-size:.8rem;color:var(--paper-muted);margin-top:2px}
+.case-desc{grid-column:1 / -1;font-size:.9rem;color:var(--paper-muted);line-height:1.7;border-top:1px solid var(--ink-border);padding-top:20px;}
+
+.process-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;border:1px solid var(--ink-border);border-radius:6px;overflow:hidden;}
+.process-step{padding:24px 20px;border-right:1px solid var(--ink-border);}
+.process-step:last-child{border-right:none}
+.process-num{font-family:var(--ff-mono);font-size:1.8rem;font-weight:700;color:var(--gold-border);margin-bottom:12px;font-variant-numeric:tabular-nums;}
+.process-step-title{font-size:.88rem;font-weight:700;color:var(--paper);margin-bottom:6px;}
+.process-step-desc{font-size:.8rem;color:var(--paper-muted);line-height:1.55}
+.process-duration{margin-top:10px;font-size:.72rem;color:var(--gold);font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+
+.section-cta{text-align:center;background:var(--ink-card);border-top:1px solid var(--ink-border);}
+.cta-box{max-width:560px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px;}
+.cta-title{font-family:var(--ff-display);font-size:clamp(1.4rem,3vw,1.9rem);font-weight:400;color:var(--paper);line-height:1.25;text-wrap:balance;}
+.cta-contact-line{font-size:.85rem;color:var(--paper-muted);}
+.cta-contact-line a{color:var(--gold);text-decoration:none;font-weight:600}
+.cta-contact-line a:hover{text-decoration:underline}
+
+.site-footer{padding:24px;border-top:1px solid var(--ink-border);display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;font-size:.78rem;color:var(--paper-muted);}
+
+.text-gold{color:var(--gold)}.text-green{color:var(--green)}.text-red{color:var(--red)}
+.mt-xs{margin-top:8px}.mt-sm{margin-top:16px}.mb-0{margin-bottom:0}
+
+@media(max-width:600px){
+  .hero-stat{padding:12px 18px;font-size:.78rem}
+  .pricing-card{border-right:none;border-bottom:1px solid var(--ink-border)}
+  .pricing-card:last-child{border-bottom:none}
+  .process-step{border-right:none;border-bottom:1px solid var(--ink-border)}
+  .process-step:last-child{border-bottom:none}
+  .problem-card{padding:20px}
+  .tracking-role{border-right:none;border-bottom:1px solid var(--ink-border)}
+  .tracking-role:last-child{border-bottom:none}
+}
+
+@media print{
+  .site-header,.header-cta{display:none}
+  body{background:#fff;color:#111}
+  .section,.section-alt,.section-ledger,.section-cta{background:#fff}
+  .outcome-card,.pricing-card,.case-wrap,.process-step,.problem-card,.tracking-feature,.roi-message{background:#f8f8f8;border-color:#ccc}
+  .hero{min-height:auto;background:#fff;padding:40px 24px}
+  .hero-headline,.section-title,.cta-title,.pricing-name,.case-header-title{color:#111}
+  .hero-subhead,.section-sub,.outcome-desc,.pricing-desc,.process-step-desc,.case-desc,.pricing-features li,.problem-desc,.tracking-role-desc{color:#444}
+  .hero-eyebrow,.section-label,.outcome-tag,.pricing-badge,.process-duration,.ledger-header,.tracking-role-name,.tracking-header-tag{color:#8a6000}
+  .ledger-row{border-color:#ddd}
+  .ledger-row.total{background:#e8f5ee}
+  .ledger-value.neg{color:#a00}
+  .ledger-value.pos,.case-metric-value,.ledger-row.total .ledger-value,.ledger-row.total .ledger-label{color:#1a7a4a}
+  .btn-primary,.pricing-cta,.header-cta{background:#8a6000;color:#fff}
+  .btn-outline,.pricing-cta.outline{color:#111;border-color:#ccc}
+  a{color:#8a6000}
+}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-brand" href="#">
+    <span class="header-brand-dot"></span>
+    Consultoría Digital para Minimarkets
+  </a>
+  <a class="header-cta" href="#contacto">Solicitar reunión</a>
+</header>
+
+<section class="hero">
+  <p class="hero-eyebrow">Propuesta Comercial · Canal Digital Propio</p>
+  <h1 class="hero-headline">
+    Su local sigue siendo el negocio.<br>
+    <em>El canal digital es el segundo.</em>
+  </h1>
+  <p class="hero-subhead">
+    Sin reemplazar su venta presencial, abre un canal que opera las 24 horas, llega a comunas que hoy no puede atender y convierte cada pedido en utilidad directa para su negocio.
+  </p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="#roi">Ver el retorno en números</a>
+    <a class="btn-outline" href="#paquetes">Ver paquetes y precios</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>3 semanas</strong>listo para operar</div>
+    <div class="hero-stat"><strong>0%</strong>comisión por pedido</div>
+    <div class="hero-stat"><strong>24/7</strong>recibe pedidos online</div>
+    <div class="hero-stat"><strong>Soporte</strong>incluido siempre</div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-inner">
+    <p class="section-label">El límite actual</p>
+    <h2 class="section-title">Solo vende a quien puede llegar físicamente hasta su local</h2>
+    <p class="section-sub">La venta presencial tiene un techo natural. Quienes no viven cerca, no tienen movilidad o no pueden venir en su horario simplemente no compran. Ese es el mercado que hoy no está capturando.</p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <span class="problem-icon">📍</span>
+        <p class="problem-title">Su mercado termina donde termina su cuadra</p>
+        <p class="problem-desc">Con venta 100% presencial, solo atiende a quienes pasan por su local. Clientes de comunas cercanas que comprarían no tienen cómo hacerlo.</p>
+        <span class="problem-figure">mercado limitado al radio caminable</span>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">🕐</span>
+        <p class="problem-title">Si el local está cerrado, no hay venta</p>
+        <p class="problem-desc">Fuera del horario de atención, los pedidos no existen. Un canal digital recibe órdenes a las 11 de la noche y las tiene listas para el día siguiente.</p>
+        <span class="problem-figure">ingresos a cero fuera del horario</span>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">📱</span>
+        <p class="problem-title">Los pedidos por WhatsApp escalan mal</p>
+        <p class="problem-desc">Anotar, confirmar, calcular y coordinar por mensaje consume tiempo de su equipo, genera errores y no deja registro de nada para analizar después.</p>
+        <span class="problem-figure">2 a 4 horas diarias en coordinación</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-ledger" id="roi">
+  <div class="section-inner">
+    <p class="section-label">El retorno de la inversión</p>
+    <h2 class="section-title">El canal digital no reemplaza su local. Construye un segundo negocio encima del primero.</h2>
+    <p class="section-sub">Proyección conservadora del mes 3. Estos ingresos no vienen de sus clientes actuales, sino de los que hoy no pueden llegar hasta su local.</p>
+    <div class="ledger-wrap">
+      <div class="ledger-header">Proyección de ingresos adicionales — mes 3 · en CLP</div>
+      <div class="ledger-body">
+        <div class="ledger-row spacer"><span class="ledger-label">Situación hoy — venta 100% presencial</span></div>
+        <div class="ledger-row"><span class="ledger-label">Mercado alcanzable</span><span class="ledger-value">solo quienes pasan por el local</span></div>
+        <div class="ledger-row"><span class="ledger-label">Horario activo</span><span class="ledger-value">mientras el local está abierto</span></div>
+        <div class="ledger-row"><span class="ledger-label">Pedidos en horario fuera de atención</span><span class="ledger-value neg">$0</span></div>
+        <div class="ledger-row spacer"><span class="ledger-label">Proyección conservadora — mes 3 del canal digital</span></div>
+        <div class="ledger-row indent"><span class="ledger-label">Pedidos desde comunas cercanas (50 × $9.000)</span><span class="ledger-value">$450.000</span></div>
+        <div class="ledger-row indent"><span class="ledger-label">Pedidos fuera de horario de atención (15 × $9.000)</span><span class="ledger-value">$135.000</span></div>
+        <div class="ledger-row indent"><span class="ledger-label">Retiros agendados con anticipación (20 × $9.000)</span><span class="ledger-value">$180.000</span></div>
+        <div class="ledger-row subtotal"><span class="ledger-label">Ingresos adicionales mensuales</span><span class="ledger-value">$765.000</span></div>
+        <div class="ledger-row indent"><span class="ledger-label">Suscripción mensual plan Profesional (AMERICO SaaS)</span><span class="ledger-value neg">− $119.000</span></div>
+        <div class="ledger-row total"><span class="ledger-label">Ganancia neta incremental mensual</span><span class="ledger-value pos">+ $646.000</span></div>
+        <div class="ledger-row total total-year"><span class="ledger-label">Al año · recupera la inversión en el mes 3</span><span class="ledger-value pos">+ $7.752.000</span></div>
+      </div>
+    </div>
+    <div class="roi-message">
+      <span class="roi-message-icon">💡</span>
+      <p class="roi-message-text"><strong>Estos ingresos son nuevos.</strong> No vienen de sus clientes actuales que ya le compran en el local. Vienen de personas que hoy no pueden llegar hasta usted, que comprarían si tuvieran la opción de hacerlo desde su celular. El canal digital no le quita ventas presenciales: las complementa.</p>
+    </div>
+    <p class="ledger-note" style="margin-top:12px">Cifras en pesos chilenos. Proyección mes 3 basada en un minimarket de barrio con radio de cobertura de 3 comunas. Los primeros dos meses incluyen el período de adopción.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <p class="section-label">Lo que obtiene</p>
+    <h2 class="section-title">Un sistema diseñado para que su negocio gane más con el mismo esfuerzo</h2>
+    <p class="section-sub">Cada módulo fue construido pensando en la operación real de un minimarket, no en una empresa de tecnología.</p>
+    <div class="outcomes-grid">
+      <div class="outcome-card"><span class="outcome-tag">Ventas</span><p class="outcome-title">Recibe pedidos a cualquier hora, sin depender de nadie</p><p class="outcome-desc">Su tienda online recibe, registra y confirma pedidos de forma automática, aunque usted esté cerrado. El cliente paga en el momento, no cuando le parece.</p></div>
+      <div class="outcome-card"><span class="outcome-tag">Pagos</span><p class="outcome-title">Cobre con tarjeta sin ceder margen a intermediarios</p><p class="outcome-desc">MercadoPago y WebPay integrados. El dinero entra directamente a su cuenta. Sin intermediarios que se queden con porcentaje de sus ingresos.</p></div>
+      <div class="outcome-card"><span class="outcome-tag">Operación</span><p class="outcome-title">Gestione todo desde un panel simple, sin formación técnica</p><p class="outcome-desc">Agregue productos, cambie precios, vea pedidos y actualice estados en tiempo real desde cualquier celular o computador, en cualquier lugar.</p></div>
+      <div class="outcome-card"><span class="outcome-tag">Clientes</span><p class="outcome-title">Sus clientes son suyos, no de una app</p><p class="outcome-desc">Cada comprador registrado queda en su base de datos. Conoce su historial, sus preferencias y cómo contactarlos sin depender de ninguna plataforma externa.</p></div>
+      <div class="outcome-card"><span class="outcome-tag">Datos</span><p class="outcome-title">Sepa qué se vende, cuándo y a cuánto</p><p class="outcome-desc">Exporte el historial de pedidos a Excel en un clic. Tome decisiones de stock y precios con información real, no con intuición.</p></div>
+      <div class="outcome-card"><span class="outcome-tag">Alcance</span><p class="outcome-title">Venda a toda la Región Metropolitana, no solo a sus vecinos</p><p class="outcome-desc">El sistema calcula el costo de envío por comuna automáticamente. Su mercado potencial se multiplica desde el primer día de operación.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="seguimiento">
+  <div class="section-inner">
+    <p class="section-label">Diferenciador clave</p>
+    <h2 class="section-title">Seguimiento de pedido en tiempo real para cada cliente</h2>
+    <p class="section-sub" style="margin-bottom:32px">El "¿cómo va mi pedido?" por WhatsApp termina el día que activa su canal digital. Cada cambio de estado dispara un email automático al cliente, sin que usted haga nada.</p>
+    <div class="tracking-feature">
+      <div class="tracking-header">
+        <span class="tracking-header-icon">📦</span>
+        <div class="tracking-header-text">
+          <p class="tracking-header-tag">Módulo incluido en todos los planes</p>
+          <p class="tracking-header-title">Seguimiento en línea con notificaciones automáticas por email</p>
+        </div>
+      </div>
+      <div class="tracking-body">
+        <div class="tracking-role"><p class="tracking-role-name">Cliente sin cuenta</p><p class="tracking-role-desc">Ingresa su número de orden en la página de seguimiento y ve el estado actual en tiempo real. No necesita registrarse para esto.</p><p class="tracking-highlight">Recibe email automático en cada cambio de estado: confirmado, preparando, listo para retiro, en camino, entregado.</p></div>
+        <div class="tracking-role"><p class="tracking-role-name">Cliente registrado</p><p class="tracking-role-desc">Consulta todos sus pedidos activos e históricos directamente desde su cuenta, con el estado actualizado al instante.</p><p class="tracking-highlight">Recibe los mismos emails automáticos que el invitado, más acceso permanente al historial completo de compras.</p></div>
+        <div class="tracking-role"><p class="tracking-role-name">Administrador</p><p class="tracking-role-desc">Cambia el estado de cualquier pedido con un dropdown en el panel admin. El sistema envía el email al cliente en ese mismo momento.</p><p class="tracking-highlight">Sin pasos extra. Cambiar el estado es lo único que hace falta para que el cliente quede informado.</p></div>
+      </div>
+      <div class="tracking-footer"><strong>Resultado:</strong> menos llamadas, menos WhatsApp, menos confusión. El cliente sabe exactamente dónde está su pedido sin tener que preguntar.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="paquetes">
+  <div class="section-inner">
+    <p class="section-label">Paquetes y precios</p>
+    <h2 class="section-title">Tres opciones según el tamaño y ritmo de su negocio</h2>
+    <p class="section-sub">Sin letra chica. El precio de implementación se paga una vez. El mantenimiento mensual incluye hosting, soporte técnico y actualizaciones.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <p class="pricing-name">Básico</p>
+        <p class="pricing-desc">Para comenzar a vender en línea con lo esencial y sin complicaciones.</p>
+        <p class="pricing-amount">$990.000 <span>implementación</span></p>
+        <p class="pricing-monthly">+ <strong>$79.000</strong>/mes mantenimiento</p>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li>Catálogo de productos con fotos</li>
+          <li>Carrito de compras y checkout</li>
+          <li>Pago en efectivo al entregar</li>
+          <li>Seguimiento de pedido en línea</li>
+          <li>Emails automáticos al cliente</li>
+          <li>Panel de administración</li>
+          <li class="dim">Tarjeta de débito / crédito</li>
+          <li class="dim">Exportación a Excel</li>
+          <li class="dim">Reportería y analytics</li>
+        </ul>
+        <a class="pricing-cta outline" href="#contacto">Consultar disponibilidad</a>
+      </div>
+      <div class="pricing-card featured">
+        <span class="pricing-badge">Más elegido</span>
+        <p class="pricing-name">Profesional</p>
+        <p class="pricing-desc">El sistema completo que cubre el 100% de la operación digital de un minimarket.</p>
+        <p class="pricing-amount">$1.590.000 <span>implementación</span></p>
+        <p class="pricing-monthly">+ <strong>$119.000</strong>/mes mantenimiento</p>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li>Todo lo del plan Básico</li>
+          <li>Pago con tarjeta (WebPay)</li>
+          <li>Pago con transferencia (MercadoPago)</li>
+          <li>Fotos de productos en la nube</li>
+          <li>Recuperar contraseña por email</li>
+          <li>Exportación de pedidos a Excel</li>
+          <li>Páginas legales (términos, privacidad)</li>
+          <li class="dim">Reportería y analytics avanzados</li>
+          <li class="dim">Múltiples sucursales</li>
+        </ul>
+        <a class="pricing-cta" href="#contacto">Solicitar propuesta</a>
+      </div>
+      <div class="pricing-card">
+        <p class="pricing-name">Enterprise</p>
+        <p class="pricing-desc">Para minimarkets con 2 o más locales que quieren tomar decisiones con datos reales.</p>
+        <p class="pricing-amount">$2.490.000 <span>implementación</span></p>
+        <p class="pricing-monthly">+ <strong>$189.000</strong>/mes mantenimiento</p>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li>Todo lo del plan Profesional</li>
+          <li class="gold">Ingresos diarios y mensuales en tiempo real</li>
+          <li class="gold">Top productos por categoría</li>
+          <li class="gold">Categorías y comunas con más ventas</li>
+          <li>Múltiples sucursales</li>
+          <li>Branding e identidad visual propia</li>
+          <li>Capacitación presencial al equipo</li>
+          <li>Soporte con tiempo de respuesta garantizado</li>
+        </ul>
+        <a class="pricing-cta outline" href="#contacto">Conversemos</a>
+      </div>
+    </div>
+    <p style="margin-top:20px;font-size:.8rem;color:var(--paper-muted);text-align:center">
+      Los items en <span style="color:var(--gold);font-weight:600">dorado</span> del plan Enterprise corresponden al módulo de analytics avanzados: reportería que en otras plataformas SaaS está reservada exclusivamente para los planes más caros.
+    </p>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-inner">
+    <p class="section-label">Caso de referencia</p>
+    <h2 class="section-title">Ya está operando en La Pintana</h2>
+    <p class="section-sub">AMERICO Minimarket es el primer cliente implementado con este sistema. Pasó de vender solo de forma presencial a tener un canal digital completo en menos de un mes.</p>
+    <div class="case-wrap">
+      <div class="case-header">
+        <p class="case-header-label">Proyecto implementado</p>
+        <p class="case-header-title">AMERICO Minimarket — La Pintana, Región Metropolitana</p>
+      </div>
+      <div class="case-body">
+        <div class="case-metric"><p class="case-metric-value">8 sprints</p><p class="case-metric-label">de desarrollo desde cero hasta producción completa</p></div>
+        <div class="case-metric"><p class="case-metric-value">0 → online</p><p class="case-metric-label">de venta 100% presencial a canal digital activo</p></div>
+        <div class="case-metric"><p class="case-metric-value">WebPay + MP</p><p class="case-metric-label">ambos medios de pago integrados y probados en producción</p></div>
+        <div class="case-metric"><p class="case-metric-value">40/40</p><p class="case-metric-label">pruebas automáticas, sistema estable y monitoreado</p></div>
+        <p class="case-desc">El sistema incluye catálogo completo con imágenes en la nube, carrito, checkout en 3 pasos, pagos con tarjeta y transferencia, seguimiento de pedidos con notificaciones automáticas por email en cada cambio de estado, panel de administración para gestionar productos y pedidos, exportación de ventas a Excel, recuperación de contraseña y páginas legales. Todo desplegado en la nube con disponibilidad 24/7 sin conocimientos técnicos requeridos para operar el día a día.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <p class="section-label">El proceso</p>
+    <h2 class="section-title">De la reunión inicial a la tienda activa en tres semanas</h2>
+    <p class="section-sub">Sin burocracia ni sorpresas. Cada etapa tiene entregables concretos y usted ve el avance en tiempo real.</p>
+    <div class="process-steps">
+      <div class="process-step"><p class="process-num">01</p><p class="process-step-title">Reunión de levantamiento</p><p class="process-step-desc">Revisamos su catálogo, zonas de despacho, horarios y cómo opera hoy su negocio. Definimos el alcance exacto.</p><p class="process-duration">Día 1 — 1 reunión</p></div>
+      <div class="process-step"><p class="process-num">02</p><p class="process-step-title">Configuración y desarrollo</p><p class="process-step-desc">Instalamos y configuramos el sistema con sus productos, colores, dirección y medios de pago. Usted ve el avance diariamente.</p><p class="process-duration">Días 2 a 14 — 2 semanas</p></div>
+      <div class="process-step"><p class="process-num">03</p><p class="process-step-title">Pruebas y ajustes</p><p class="process-step-desc">Hacemos una prueba completa de compra real antes de publicar. Cualquier ajuste se resuelve antes del lanzamiento.</p><p class="process-duration">Días 15 a 18 — 4 días</p></div>
+      <div class="process-step"><p class="process-num">04</p><p class="process-step-title">Lanzamiento y capacitación</p><p class="process-step-desc">Su tienda queda pública. Le enseñamos a usar el panel admin, subir productos y gestionar pedidos en una sesión práctica.</p><p class="process-duration">Día 19 a 21 — operando</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-cta" id="contacto">
+  <div class="section-inner">
+    <div class="cta-box">
+      <p class="section-label mb-0">Próximo paso</p>
+      <h2 class="cta-title">Una reunión de 30 minutos para ver si tiene sentido para su negocio</h2>
+      <p style="font-size:.9rem;color:var(--paper-muted);text-align:center;line-height:1.7">Sin compromiso. Revisamos su volumen de ventas actual, calculamos el retorno específico para su negocio y definimos si el proyecto es viable. Si no le conviene, se lo decimos.</p>
+      <a class="btn-primary" href="mailto:ksandoval@cerveros.cl" style="font-size:.95rem;padding:16px 40px">Agendar reunión gratuita</a>
+      <p class="cta-contact-line">O escríbanos directamente a <a href="mailto:ksandoval@cerveros.cl">ksandoval@cerveros.cl</a></p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <span>Consultoría Digital para Minimarkets — Chile</span>
+  <span>Documento confidencial · Uso exclusivo del destinatario</span>
+</footer>
+
+</body>
+</html>

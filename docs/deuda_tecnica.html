@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deuda Técnica — AMERICO Minimarket</title>
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ground:   #F5F3EF;
+    --surface:  #FFFFFF;
+    --border:   #E3DDD5;
+    --text:     #1C1917;
+    --muted:    #78716C;
+    --accent:   #D97706;
+    --p0: #DC2626;
+    --p1: #EA580C;
+    --p2: #B45309;
+    --p3: #475569;
+    --p0-bg: #FEF2F2;
+    --p1-bg: #FFF7ED;
+    --p2-bg: #FFFBEB;
+    --p3-bg: #F8FAFC;
+    --radius: 6px;
+    --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', ui-monospace, monospace;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 48px 20px 80px;
+  }
+
+  .page { max-width: 760px; margin: 0 auto; }
+
+  .header { padding-bottom: 28px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+  .header-meta { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+  .tag { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; background: var(--border); color: var(--muted); padding: 2px 7px; border-radius: 3px; }
+  .tag.amber { background: #FEF3C7; color: #92400E; }
+  h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; color: var(--text); text-wrap: balance; margin-bottom: 8px; }
+  .header-sub { font-size: 14px; color: var(--muted); max-width: 56ch; line-height: 1.5; }
+
+  .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 36px; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .summary-card .count { font-family: var(--mono); font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+  .summary-card .label { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+  .c-p0 { color: var(--p0); } .c-p1 { color: var(--p1); } .c-p2 { color: var(--p2); } .c-p3 { color: var(--p3); }
+
+  .section { margin-bottom: 36px; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+  .section-badge { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 3px; text-transform: uppercase; }
+  .badge-p0 { background: var(--p0-bg); color: var(--p0); }
+  .badge-p1 { background: var(--p1-bg); color: var(--p1); }
+  .badge-p2 { background: var(--p2-bg); color: var(--p2); }
+  .badge-p3 { background: var(--p3-bg); color: var(--p3); }
+
+  .item-list { display: flex; flex-direction: column; gap: 8px; }
+  .item { background: var(--surface); border: 1px solid var(--border); border-left-width: 3px; border-radius: var(--radius); padding: 14px 16px; }
+  .item.p0 { border-left-color: var(--p0); }
+  .item.p1 { border-left-color: var(--p1); }
+  .item.p2 { border-left-color: var(--p2); }
+  .item.p3 { border-left-color: var(--p3); }
+
+  .item-top { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .item-title { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; min-width: 200px; line-height: 1.3; }
+  .area-tag { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; background: var(--ground); color: var(--muted); padding: 2px 6px; border-radius: 3px; white-space: nowrap; border: 1px solid var(--border); flex-shrink: 0; }
+  .item-desc { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 10px; max-width: 64ch; }
+  .item-footer { display: flex; gap: 16px; flex-wrap: wrap; }
+  .meta { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
+  .meta-label { font-weight: 600; color: var(--text); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .meta-value { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .meta-value.critical { color: var(--p0); font-weight: 600; }
+
+  .fix { margin-top: 8px; padding: 7px 10px; background: var(--ground); border-radius: 4px; font-size: 12px; color: var(--muted); border: 1px solid var(--border); }
+  .fix strong { color: var(--text); font-weight: 600; }
+
+  code { font-family: var(--mono); font-size: 11px; background: var(--border); padding: 1px 4px; border-radius: 3px; }
+
+  .footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  @media (max-width: 540px) {
+    .summary { grid-template-columns: repeat(2, 1fr); }
+    h1 { font-size: 20px; }
+  }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="header">
+    <div class="header-meta">
+      <span class="tag">AMERICO Minimarket</span>
+      <span class="tag">Sprint 9 → post</span>
+      <span class="tag amber">Modo captación activo</span>
+    </div>
+    <h1>Registro de deuda técnica</h1>
+    <p class="header-sub">13 ítems clasificados por prioridad. Ninguno bloquea el pitch — sirven para planificar el backlog post-primer-cliente.</p>
+  </header>
+
+  <div class="summary">
+    <div class="summary-card"><div class="count c-p0">2</div><div class="label">P0 — Crítico</div></div>
+    <div class="summary-card"><div class="count c-p1">3</div><div class="label">P1 — Alto</div></div>
+    <div class="summary-card"><div class="count c-p2">4</div><div class="label">P2 — Medio</div></div>
+    <div class="summary-card"><div class="count c-p3">4</div><div class="label">P3 — Bajo</div></div>
+  </div>
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-badge badge-p0">P0 — Crítico</span>
+      <span class="section-title">Visible en producción hoy</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="item-list">
+      <div class="item p0">
+        <div class="item-top"><span class="item-title">Imágenes de productos guardadas como base64 en cada pedido</span><span class="area-tag">Backend · BD</span></div>
+        <p class="item-desc">Al crear un pedido, el servicio copia el campo <code>imageUrl</code> del producto — que puede ser una cadena base64 de 300–600 KB — dentro de cada ítem. Un pedido con 4 productos puede pesar más de 1 MB en respuesta JSON. Afecta <code>GET /orders/my</code>, el panel admin de pedidos y la carga del módulo de analytics.</p>
+        <div class="fix"><strong>Fix:</strong> En <code>order.service.ts</code>, al mapear ítems del carrito, guardar solo la URL de Cloudinary (o cadena vacía si no existe) en lugar del base64 completo. Los pedidos ya existentes quedan con el dato viejo pero los nuevos serán livianos.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value critical">Performance + costos Atlas</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~2h</span></div></div>
+      </div>
+      <div class="item p0">
+        <div class="item-top"><span class="item-title">Dirección ficticia visible en el selector de retiro en tienda</span><span class="area-tag">Frontend</span></div>
+        <p class="item-desc">El checkout mostraba "Av. Ejemplo 1234" como dirección de retiro. Un cliente real vería esto durante el flujo de compra, rompiendo la credibilidad del demo y de cualquier primera venta. <strong>Estado:</strong> ya corregido a "Sgto. Daniel Rebolledo 0739, La Pintana".</p>
+        <div class="fix"><strong>Fix aplicado:</strong> Dirección real ya en <code>DeliverySelector.tsx</code>. Cerrado.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value critical">Confianza del cliente</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">Resuelto ✓</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-badge badge-p1">P1 — Alto</span>
+      <span class="section-title">Resolver antes del primer cliente real</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="item-list">
+      <div class="item p1">
+        <div class="item-top"><span class="item-title">Sin rate limiting en endpoints públicos</span><span class="area-tag">Backend · Seguridad</span></div>
+        <p class="item-desc"><code>/auth/login</code>, <code>/auth/forgot-password</code> y <code>/orders/track/:orderNumber</code> no tienen límite de peticiones. Un bot puede hacer fuerza bruta sobre credenciales o enumerar números de pedido sin restricción.</p>
+        <div class="fix"><strong>Fix:</strong> <code>express-rate-limit</code> ya instalado — 5 req/min en rutas de auth, 30 req/min en tracking. Se activa en minutos y no requiere infraestructura adicional.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">Seguridad operacional</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~2h</span></div></div>
+      </div>
+      <div class="item p1">
+        <div class="item-top"><span class="item-title">Sin monitoring de errores en producción</span><span class="area-tag">Infraestructura</span></div>
+        <p class="item-desc">Si un webhook de WebPay o MercadoPago falla silenciosamente, no hay alerta. Los logs de Railway son efímeros — un error de las 3 AM desaparece antes de que alguien lo vea. Hoy el único aviso de problemas es que un cliente se queja.</p>
+        <div class="fix"><strong>Fix:</strong> Sentry en el plan free (5 min de integración con Express + React) cubre ambos repos. Railway permite configurar un log drain a Papertrail o Logtail sin costo adicional en volumen bajo.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">Visibilidad operacional</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~2h</span></div></div>
+      </div>
+      <div class="item p1">
+        <div class="item-top"><span class="item-title">OG image y favicon</span><span class="area-tag">Frontend · SEO</span></div>
+        <p class="item-desc">Compartir el sitio por WhatsApp, Instagram o redes sociales mostraba un preview vacío sin imagen ni título. El favicon de la pestaña era el genérico de Vite. <strong>Estado:</strong> resuelto en post-Sprint 9.</p>
+        <div class="fix"><strong>Fix aplicado:</strong> Favicon SVG amber + og-image.svg 1200×630 + meta tags og:* y twitter:* en index.html. Verificado con Facebook Debugger (206 OK). Cerrado.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">Percepción de marca</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">Resuelto ✓</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-badge badge-p2">P2 — Medio</span>
+      <span class="section-title">Planificar en el primer sprint post-cierre</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="item-list">
+      <div class="item p2">
+        <div class="item-top"><span class="item-title">Plan gating de /admin/reportes sin implementar</span><span class="area-tag">Frontend · Producto</span></div>
+        <p class="item-desc">El módulo de Reportes está posicionado como exclusivo del plan Enterprise, pero todos los deploys lo ven independientemente del plan contratado. Si se vende un plan Básico, el cliente recibe una funcionalidad que no pagó.</p>
+        <div class="fix"><strong>Fix:</strong> Variable de entorno <code>VITE_PLAN_TIER=basic|professional|enterprise</code> en Railway. En <code>AdminLayout.tsx</code>, leer el env var y renderizar el ítem "Reportes" solo si el tier es <code>enterprise</code>.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">Monetización del SaaS</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~1h</span></div></div>
+      </div>
+      <div class="item p2">
+        <div class="item-top"><span class="item-title">getMyOrders sin paginación</span><span class="area-tag">Backend</span></div>
+        <p class="item-desc"><code>GET /orders/my</code> retorna todos los pedidos del usuario sin límite. Con un cliente activo que acumula 100+ pedidos al año, la respuesta puede volverse lenta. El panel admin ya tiene paginación — este endpoint quedó sin ella.</p>
+        <div class="fix"><strong>Fix:</strong> Añadir <code>?page=1&limit=20</code> igual al patrón ya implementado en <code>GET /admin/orders</code>. El frontend ajusta <code>AccountOrders.tsx</code> para mostrar paginación.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">Performance a escala</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~2h</span></div></div>
+      </div>
+      <div class="item p2">
+        <div class="item-top"><span class="item-title">Webhooks de pago sin idempotencia robusta</span><span class="area-tag">Backend · Pagos</span></div>
+        <p class="item-desc">Si MercadoPago o WebPay reintenta un webhook por timeout de red, el handler podría procesar el cambio de estado dos veces. Hay una verificación básica de estado actual del pedido, pero no un registro explícito de IDs de webhook procesados.</p>
+        <div class="fix"><strong>Fix:</strong> Guardar el ID del webhook (<code>payment_id</code> en MP, <code>buyOrder</code> en WebPay) en el documento de pedido. Verificar duplicado antes de ejecutar el cambio de estado.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">Integridad de pagos</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~3h</span></div></div>
+      </div>
+      <div class="item p2">
+        <div class="item-top"><span class="item-title">Sin alertas de stock bajo en el admin</span><span class="area-tag">Producto</span></div>
+        <p class="item-desc">El admin puede ver qué productos tienen stock 0, pero no hay alerta proactiva cuando un producto llega a stock crítico (ej. ≤5 unidades). El administrador se entera del quiebre cuando un cliente ya no puede comprarlo.</p>
+        <div class="fix"><strong>Fix:</strong> Badge numérico en el sidebar junto a "Productos" cuando hay ítems con stock ≤ 5. Sin backend nuevo — solo una query al cargar el layout.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">Operación diaria del cliente</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~2h</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-badge badge-p3">P3 — Bajo</span>
+      <span class="section-title">Backlog de mejoras de producto</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="item-list">
+      <div class="item p3">
+        <div class="item-top"><span class="item-title">0% de cobertura de tests en el frontend</span><span class="area-tag">Testing</span></div>
+        <p class="item-desc">El backend tiene 46 tests. El frontend React no tiene ninguno. Los flujos de checkout, autenticación, carrito y tracking no están automatizados — cualquier regresión solo se detecta manualmente.</p>
+        <div class="fix"><strong>Fix:</strong> Vitest + React Testing Library. Priorizar: <code>toFrontendOrder</code> (ya causó el bug del total), flujo del carrito, y la lógica de AdminGuard. Un 30% en código crítico ya es valor.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">Calidad a largo plazo</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~8h</span></div></div>
+      </div>
+      <div class="item p3">
+        <div class="item-top"><span class="item-title">Fecha estimada de entrega no se muestra en el tracking</span><span class="area-tag">Frontend</span></div>
+        <p class="item-desc">El campo <code>estimatedDate</code> existe en el modelo, se incluye en el endpoint de tracking y llega al frontend, pero <code>OrderTracking.tsx</code> no lo renderiza. Es información valiosa para el cliente que espera su despacho.</p>
+        <div class="fix"><strong>Fix:</strong> Mostrar "Entrega estimada: [fecha formateada]" debajo del tipo de fulfillment cuando el campo existe. 5 líneas de JSX.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">UX del cliente final</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~30 min</span></div></div>
+      </div>
+      <div class="item p3">
+        <div class="item-top"><span class="item-title">Admin no recibe notificación cuando llega un pedido digital</span><span class="area-tag">Backend · Emails</span></div>
+        <p class="item-desc">Para pagos en efectivo/retiro, el admin recibe email al crear el pedido. Para WebPay y MercadoPago, el webhook de confirmación envía el email al cliente pero no notifica al administrador.</p>
+        <div class="fix"><strong>Fix:</strong> En los handlers de webhook de ambos medios de pago, llamar a <code>sendNewOrderNotification(order)</code> después de confirmar el pago. La función ya existe — solo falta invocarla.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">Operación del administrador</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~30 min</span></div></div>
+      </div>
+      <div class="item p3">
+        <div class="item-top"><span class="item-title">Sin búsqueda en el catálogo</span><span class="area-tag">Producto · Frontend</span></div>
+        <p class="item-desc">El catálogo filtra por categoría pero no tiene campo de búsqueda por nombre. Para un minimarket con 80–150 SKUs, navegar categoría a categoría para encontrar un producto específico es lento.</p>
+        <div class="fix"><strong>Fix:</strong> Input de búsqueda en <code>Catalog.tsx</code> que filtre client-side en los productos ya cargados, o que llame a <code>GET /products?search=</code> con debounce. El backend ya soporta el param <code>search</code>.</div>
+        <div class="item-footer"><div class="meta"><span class="meta-label">Impacto</span><span class="meta-value">Conversión en catálogo</span></div><div class="meta"><span class="meta-label">Esfuerzo</span><span class="meta-value">~3h</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>AMERICO Minimarket SaaS — Registro de deuda técnica post-Sprint 9</span>
+    <span style="font-family: var(--mono);">13 ítems · ~30h estimadas</span>
+  </footer>
+
+</div>
+</body>
+</html>
